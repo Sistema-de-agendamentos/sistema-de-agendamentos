@@ -6,14 +6,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-const Select = ({
-  name,
-  label,
-  fullWidth = true,
-  children,
-  margin = "normal",
-  ...props
-}) => {
+function Select({ name, label, fullWidth = true, children, ...props }) {
   const {
     control,
     clearErrors,
@@ -60,6 +53,6 @@ const Select = ({
       )}
     />
   );
-};
+}
 
 export default Select;

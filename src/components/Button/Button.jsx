@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Button as ButtonMaterialUI, CircularProgress } from "@mui/material";
 
-const Button = ({
+function Button({
   children,
   type = "button",
   onClick = () => {},
@@ -11,9 +11,9 @@ const Button = ({
   variant = "contained",
   color = "primary",
   ...props
-}) => {
+}) {
   const buttonRef = useRef();
-  const originalWidth = buttonRef.current?.getBoundingClientRect().width + "px";
+  const originalWidth = `${buttonRef.current?.getBoundingClientRect().width}px`;
 
   return (
     <ButtonMaterialUI
@@ -30,6 +30,6 @@ const Button = ({
       {isLoading ? <CircularProgress size={24.5} /> : children}
     </ButtonMaterialUI>
   );
-};
+}
 
 export default Button;

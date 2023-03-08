@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField as TextFieldMaterialUI } from "@mui/material";
 
-const TextField = ({ name, label, type = "text", ...props }) => {
+function TextField({ name, label, type = "text", ...props }) {
   const {
     control,
     clearErrors,
@@ -33,6 +33,6 @@ const TextField = ({ name, label, type = "text", ...props }) => {
       )}
     />
   );
-};
+}
 
 export default TextField;
