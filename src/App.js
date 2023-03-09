@@ -1,5 +1,7 @@
+import Login from "./screens/Login";
+
 function App() {
-  return <div>Sistema de agendamentos</div>;
+  return <Login />;
 }
 
 export default App;
