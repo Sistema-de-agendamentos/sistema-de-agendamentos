@@ -19,6 +19,11 @@
         "react"
     ],
     "rules": {
-        "jsx-filename-extension": false
+        "no-multiple-empty-lines": "error",
+        "no-restricted-exports": "off",
+        "react/jsx-filename-extension": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off"
     }
 }
