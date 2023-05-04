@@ -1,6 +1,10 @@
 import { useRef } from "react";
 import { Button as ButtonMaterialUI, CircularProgress } from "@mui/material";
 
+const restStyles = {
+  margin: "1rem 0 0.5rem",
+};
+
 function Button({
   children,
   type = "button",
@@ -24,7 +28,7 @@ function Button({
       size={size}
       variant={variant}
       color={color}
-      style={{ minWidth: originalWidth }}
+      style={{ minWidth: originalWidth, ...restStyles }}
       {...props}
     >
       {isLoading ? <CircularProgress size={24.5} /> : children}
