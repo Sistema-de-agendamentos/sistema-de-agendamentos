@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField as TextFieldMaterialUI } from "@mui/material";
 
@@ -12,6 +12,10 @@ function TextField({ name, label, type = "text", ...props }) {
   const errorMessage = errors[name]?.message;
 
   const clearError = useCallback(() => clearErrors(name), [clearErrors, name]);
+
+  const style = useMemo(() => {
+    return { marginBottom: errorMessage ? "-0.5rem" : "0.9375rem" };
+  }, [errorMessage]);
 
   return (
     <Controller
@@ -27,6 +31,7 @@ function TextField({ name, label, type = "text", ...props }) {
           margin="normal"
           variant="outlined"
           fullWidth
+          style={style}
           {...field}
           {...props}
         />
