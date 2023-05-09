@@ -16,14 +16,17 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "react-hooks"   
     ],
     "rules": {
+        "react-hooks/exhaustive-deps": "warn",
         "no-multiple-empty-lines": "error",
         "no-restricted-exports": "off",
         "react/jsx-filename-extension": "off",
         "react/jsx-props-no-spreading": "off",
         "react/prop-types": "off",
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "arrow-body-style": "off"
     }
 }
