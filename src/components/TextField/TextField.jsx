@@ -9,7 +9,7 @@ function TextField({ name, label, type = "text", ...props }) {
     formState: { errors },
   } = useFormContext();
 
-  const errorMessage = useMemo(() => errors[name]?.message, [errors, name]);
+  const errorMessage = errors[name]?.message;
 
   const clearError = useCallback(() => clearErrors(name), [clearErrors, name]);
 
