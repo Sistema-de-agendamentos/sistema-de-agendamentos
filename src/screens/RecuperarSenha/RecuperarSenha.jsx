@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Typography from "@mui/material/Typography";
 
 import Button from "../../components/Button";
 import TextField from "../../components/TextField";
@@ -10,15 +11,13 @@ import PublicScreen from "../../components/PublicScreen";
 
 const defaultValues = {
   login: "",
-  password: "",
 };
 
 const schema = yup.object().shape({
-  login: yup.string().required("Login é obrigatório"),
-  password: yup.string().required("Senha é obrigatório"),
+  login: yup.string().required("Senha é obrigatório"),
 });
 
-function Login() {
+function RecuperarSenha() {
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { handleSubmit } = methods;
 
@@ -30,17 +29,21 @@ function Login() {
   }, []);
 
   return (
-    <PublicScreen title="Login">
+    <PublicScreen title="Esqueceu a senha?">
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(submit)}>
-          <TextField name="login" label="Usuário" />
-          <TextField name="password" label="Senha" />
+          <Typography paragraph style={{ margin: "1.3125rem 0 1.125rem" }}>
+            Digite o login cadastrado para enviarmos um link para a recuperação
+            da senha para o seu e-mail
+          </Typography>
+
+          <TextField name="login" label="Login" />
           <Button type="submit" onClick={() => {}} fullWidth>
-            Entrar
+            Enviar
           </Button>
 
-          <Button onClick={() => navigate("/esqueceu-senha")} variant="inherit">
-            Esqueceu a senha?
+          <Button onClick={() => navigate("/")} variant="inherit">
+            Deseja fazer login?
           </Button>
         </form>
       </FormProvider>
@@ -48,4 +51,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default RecuperarSenha;
