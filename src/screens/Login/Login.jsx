@@ -1,17 +1,28 @@
 import { useCallback } from "react";
+import { useNavigate } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import Button from "../../components/Button";
 import TextField from "../../components/TextField";
+import PublicScreen from "../../components/PublicScreen";
 
 const defaultValues = {
-  username: "",
+  login: "",
   password: "",
 };
 
+const schema = yup.object().shape({
+  login: yup.string().required("Login é obrigatório"),
+  password: yup.string().required("Senha é obrigatório"),
+});
+
 function Login() {
-  const methods = useForm({ defaultValues });
+  const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { handleSubmit } = methods;
+
+  const navigate = useNavigate();
 
   const submit = useCallback(() => {
     // eslint-disable-next-line no-console
@@ -19,17 +30,21 @@ function Login() {
   }, []);
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(submit)}>
-        <TextField name="username" label="Usuário" />
+    <PublicScreen title="Login">
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(submit)}>
+          <TextField name="login" label="Usuário" />
+          <TextField name="password" label="Senha" />
+          <Button type="submit" onClick={() => {}} fullWidth>
+            Entrar
+          </Button>
 
-        <TextField name="password" label="Senha" />
-
-        <Button type="submit" onClick={() => {}}>
-          Entrar
-        </Button>
-      </form>
-    </FormProvider>
+          <Button onClick={() => navigate("/esqueceu-senha")} variant="inherit">
+            Esqueceu a senha?
+          </Button>
+        </form>
+      </FormProvider>
+    </PublicScreen>
   );
 }
 
