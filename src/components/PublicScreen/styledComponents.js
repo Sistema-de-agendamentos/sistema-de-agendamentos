@@ -16,6 +16,7 @@ const StyledContentLeft = styled(Box)({
 const StyledContentRight = styled(Box)({
   display: "flex",
   flexDirection: "column",
+  justifyContent: "center",
   width: "55%",
   padding: "10rem",
   background: "#F5F5F5",
