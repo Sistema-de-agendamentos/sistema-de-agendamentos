@@ -2,7 +2,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ThemeProvider } from "@mui/material";
 
 import theme from "./styles/theme";
-import Login from "./screens/Login";
+import Routes from "./routes";
 
 import "./styles/styles.css";
 
@@ -12,7 +12,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <Login />
+        <Routes />
       </ThemeProvider>
     </QueryClientProvider>
   );
