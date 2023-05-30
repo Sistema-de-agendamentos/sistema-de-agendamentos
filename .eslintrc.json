@@ -19,6 +19,16 @@
         "react",
         "react-hooks"   
     ],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": ["src"],
+                "alias": {
+                    "components": "./src/components"
+                }
+            }
+        }
+    },    
     "rules": {
         "react-hooks/exhaustive-deps": "warn",
         "no-multiple-empty-lines": "error",
@@ -27,6 +37,8 @@
         "react/jsx-props-no-spreading": "off",
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
-        "arrow-body-style": "off"
+        "arrow-body-style": "off",
+        "import/no-unresolved": "off",
+        "import/no-extraneous-dependencies": "off"
     }
 }
