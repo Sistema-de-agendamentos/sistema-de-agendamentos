@@ -31,7 +31,7 @@ function Button({
       style={{ minWidth: originalWidth, ...restStyles }}
       {...props}
     >
-      {isLoading ? <CircularProgress size={24.5} /> : children}
+      {isLoading ? <CircularProgress size={26} /> : children}
     </ButtonMaterialUI>
   );
 }
