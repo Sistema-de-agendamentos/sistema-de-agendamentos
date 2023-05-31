@@ -2,6 +2,7 @@ import { styled } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 const StyledTypography = styled(Typography)((props) => ({
+  width: "fit-content",
   marginBottom: "0.5rem",
   fontSize: "1.5rem",
   fontWeight: "bold",
