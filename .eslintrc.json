@@ -30,15 +30,16 @@
         }
     },    
     "rules": {
-        "react-hooks/exhaustive-deps": "warn",
+        "arrow-body-style": "off",
+        "import/no-extraneous-dependencies": "off",
+        "import/no-unresolved": "off",
         "no-multiple-empty-lines": "error",
         "no-restricted-exports": "off",
+        "react-hooks/exhaustive-deps": "warn",
         "react/jsx-filename-extension": "off",
+        "react/jsx-fragments": "off",
         "react/jsx-props-no-spreading": "off",
         "react/prop-types": "off",
-        "react/react-in-jsx-scope": "off",
-        "arrow-body-style": "off",
-        "import/no-unresolved": "off",
-        "import/no-extraneous-dependencies": "off"
+        "react/react-in-jsx-scope": "off"
     }
 }
