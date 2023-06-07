@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useNavigate } from "react-router";
+
 import { useAuthStore } from "../../stores";
 import { useQuery } from "../../hooks";
 import LoadingPage from "../../screens/LoadingPage";
@@ -6,15 +7,33 @@ import App from "../App/App";
 
 function AuthProvider() {
   const { setAuthentication } = useAuthStore();
-  const user = localStorage.getItem("user");
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const { data, isFetching } = useQuery({
-    endpoint: "/verificar-token",
+  const navigate = useNavigate();
+
+  const { isFetching } = useQuery({
+    endpoint: "/auth/refresh",
+    method: "POST",
+    body: { refreshToken: user?.refreshToken },
     successText: "Relogado efetuado com sucesso",
-    queryOptions: { enabled: !!user },
-  });
+    queryOptions: {
+      enabled: !!user,
+      onSuccess: (data = {}) => {
+        const { data: newUser = {} } = data;
+        const { accessToken } = newUser;
 
-  useEffect(() => setAuthentication(!!data), [data, setAuthentication]);
+        localStorage.setItem("user", JSON.stringify(newUser));
+        if (accessToken) {
+          navigate("/agendamentos");
+          setAuthentication(true);
+        }
+      },
+      onError: () => {
+        localStorage.removeItem("user");
+        setAuthentication(false);
+      },
+    },
+  });
 
   if (isFetching)
     return (
