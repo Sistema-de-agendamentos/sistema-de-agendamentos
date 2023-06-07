@@ -20,9 +20,11 @@ const theme = createTheme({
         root: {
           fontWeight: "bold",
           "&.MuiButton-inherit": {
+            padding: "0.5rem 1.375rem",
             textDecoration: "underline",
             textTransform: "none",
             color: "#333",
+            fontSize: "0.9375rem",
           },
         },
       },
