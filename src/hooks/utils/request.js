@@ -1,5 +1,7 @@
 async function request({ endpoint, method, body: data = null }) {
-  const url = `${process.env.API_URL || "http://localhost"}${endpoint}`;
+  const url = `${
+    process.env.API_URL || "http://168.138.140.238:3000"
+  }${endpoint}`;
   const body = data ? JSON.stringify(data) : null;
   const headers = { "Content-Type": "application/json" };
 
