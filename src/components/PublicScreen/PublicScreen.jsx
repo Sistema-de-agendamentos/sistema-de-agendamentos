@@ -11,7 +11,7 @@ function PublicScreen({ children, title }) {
   return (
     <StyledContainer>
       <StyledContentLeft>
-        <img src={Logo} alt="Logo" style={{ filter: "grayscale(1)" }} />
+        <img src={Logo} alt="Logo" className="logo" />
       </StyledContentLeft>
 
       <StyledContentRight>
