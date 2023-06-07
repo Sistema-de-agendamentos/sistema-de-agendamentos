@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 
-import { Layout } from "components";
 import { useAuthStore } from "stores";
+
+import Layout from "../components/Layout";
 
 import privateRoutes from "./private.routes";
 import publicRoutes from "./public.routes";
@@ -11,23 +12,27 @@ function AppRoutes() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {publicRoutes.map(({ element, path }) => (
-          <Route key={path} element={element} path={path} />
-        ))}
+    <Routes>
+      {publicRoutes.map(({ element, path }) => (
+        <Route key={path} element={element} path={path} />
+      ))}
 
-        <Layout>
-          {privateRoutes.map(({ element, path }) => (
-            <Route
-              key={path}
-              element={isAuthenticated ? element : <Navigate to="/" replace />}
-              path={path}
-            />
-          ))}
-        </Layout>
-      </Routes>
-    </BrowserRouter>
+      {privateRoutes.map(({ element, path }) => (
+        <Route
+          key={path}
+          element={
+            isAuthenticated ? (
+              <Layout>{element}</Layout>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+          path={path}
+        />
+      ))}
+
+      <Route element={<Navigate to="/404" replace />} path="*" />
+    </Routes>
   );
 }
 
