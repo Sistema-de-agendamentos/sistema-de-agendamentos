@@ -4,6 +4,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+import { useAuthStore } from "stores";
+
 import useMutation from "../../hooks/useMutation";
 import Button from "../../components/Button";
 import TextField from "../../components/TextField";
@@ -22,6 +24,7 @@ const schema = yup.object().shape({
 function Login() {
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { clearErrors, handleSubmit } = methods;
+  const { setAuthentication } = useAuthStore();
 
   const navigate = useNavigate();
 
@@ -41,9 +44,12 @@ function Login() {
   useEffect(() => {
     if (isSuccess) {
       localStorage.setItem("user", JSON.stringify(user));
-      if (accessToken) navigate("/agendamentos");
+      if (accessToken) {
+        navigate("/agendamentos");
+        setAuthentication(true);
+      }
     }
-  }, [accessToken, user, isSuccess, navigate]);
+  }, [accessToken, user, isSuccess, navigate, setAuthentication]);
 
   return (
     <PublicScreen title="Login">
