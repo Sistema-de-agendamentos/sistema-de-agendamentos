@@ -13,6 +13,7 @@ function useCustomQuery({
   method = "GET",
   body = null,
   queryOptions = {},
+  successText = "",
 }) {
   const queryKey = key ? [key] : [endpoint, body];
 
@@ -23,15 +24,17 @@ function useCustomQuery({
     staleTime: ONE_HOUR,
     retry: false,
     refetchOnWindowFocus: false,
-    onSuccess: () => {},
+    ...queryOptions,
+    onSuccess: (data) => {
+      if (successText) toast.success(successText);
+      if (queryOptions?.onSuccess) queryOptions.onSuccess(data);
+    },
     onError: (error) => {
       const errorMessage = error.message || error;
-
       toast.error(errorMessage);
-      return errorMessage;
+
+      if (queryOptions?.onError) queryOptions.onError(errorMessage);
     },
-    onSettled: () => {},
-    ...queryOptions,
   });
 }
 
