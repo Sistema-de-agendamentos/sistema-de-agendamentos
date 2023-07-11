@@ -16,8 +16,8 @@ const DrawerStyled = styled(Drawer)(({ open }) => ({
     display: "flex",
     position: "static",
     width: open ? "14rem" : "3rem",
-    transition: "0.3s",
-    boxShadow: "0 1px 5px 0 rgba(0, 0, 0, 0.3)",
+    transition: ".3s",
+    boxShadow: "0 1px 5px 0 rgba(0, 0, 0, .3)",
     height: "100vh",
     overflowX: "hidden",
   },
@@ -25,8 +25,22 @@ const DrawerStyled = styled(Drawer)(({ open }) => ({
 
 const MenuStyled = styled(Box)((props) => ({
   flex: 1,
-  transition: "0.3s",
+  transition: ".3s",
   ...(!props["data-open"] && { transform: "translateY(-9.75rem)" }),
+}));
+
+const ButtonOpenDrawerStyled = styled(Button)((props) => ({
+  marginBottom: "0 !important",
+  padding: ".75rem !important",
+  justifyContent: "flex-end",
+  transition: ".3s",
+  ...(!props["data-open"] && {
+    minWidth: "3rem !important",
+    "& > svg": {
+      transform: "rotate(180deg)",
+      transition: ".3s",
+    },
+  }),
 }));
 
 const ContentStyled = styled(Box)({
@@ -72,10 +86,10 @@ function Layout({ children }) {
 
   const menus = [
     { path: "/agendamentos", icon: "CalendarMonth", text: "Agendamentos" },
+    { path: "/atendimentos", icon: "Assignment", text: "Atendimentos" },
     { path: "/clientes", icon: "SwitchAccount", text: "Clientes" },
     { path: "/usuarios", icon: "Badge", text: "Usuários" },
     { path: "/organizacoes", icon: "Business", text: "Organizações" },
-    { path: "/atendimentos", icon: "Assignment", text: "Atendimentos" },
     { path: "/configuracoes", icon: "Settings", text: "Configurações" },
     { path: "/configuradores", icon: "WatchLater", text: "Configuradores" },
   ];
@@ -108,13 +122,14 @@ function Layout({ children }) {
           })}
         </MenuStyled>
 
-        <Button
+        <ButtonOpenDrawerStyled
           onClick={() => setOpenDrawer(!openDrawer)}
           fullWidth
           variant="inherit"
+          data-open={openDrawer}
         >
-          {/* {openDrawer ? "Fechar" : "Abrir"} */}{" "}
-        </Button>
+          <Icon name="NavigateBefore" />
+        </ButtonOpenDrawerStyled>
       </DrawerStyled>
 
       <ContentStyled>{children}</ContentStyled>
