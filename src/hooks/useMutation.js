@@ -16,18 +16,18 @@ function useCustomMutation({
     mutationKey,
     (body = null) => request({ endpoint, method, body }),
     {
-      onSuccess: () => {
+      ...mutationOptions,
+      onSuccess: (data) => {
         if (successText) toast.success(successText);
-        return successText;
+        if (mutationOptions?.onSuccess) mutationOptions.onSuccess(data);
       },
       onError: (error) => {
         const errorMessage = error.message || error;
-
         toast.error(errorMessage);
+
+        if (mutationOptions?.onError) mutationOptions.onError(errorMessage);
         return errorMessage;
       },
-      onSettled: () => {},
-      ...mutationOptions,
     }
   );
 }

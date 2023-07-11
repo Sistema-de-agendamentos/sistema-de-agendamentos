@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,41 +23,33 @@ const schema = yup.object().shape({
 });
 
 function Login() {
-  const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
-  const { clearErrors, handleSubmit } = methods;
+  const navigate = useNavigate();
   const { setAuthentication } = useAuthStore();
 
-  const navigate = useNavigate();
+  const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
+  const { clearErrors, handleSubmit } = methods;
 
   const {
-    data: dataLogin = {},
     mutate: mutateLogin,
     isLoading: isLoadingLogin,
     isSuccess: isSuccessLogin,
   } = useMutation({
     endpoint: "/auth",
     successText: "Autenticado com sucesso",
+    mutationOptions: {
+      onSuccess: (dataLogin = {}) => {
+        const { data: userLogin = {} } = dataLogin;
+        const { accessToken: accessTokenLogin } = userLogin;
+
+        localStorage.setItem("user", JSON.stringify(userLogin));
+
+        if (accessTokenLogin) {
+          navigate("/agendamentos");
+          setAuthentication(true);
+        }
+      },
+    },
   });
-
-  const { data: userLogin = {} } = dataLogin;
-  const { accessToken: accessTokenLogin } = userLogin;
-
-  useEffect(() => {
-    if (isSuccessLogin) {
-      localStorage.setItem("user", JSON.stringify(userLogin));
-
-      if (accessTokenLogin) {
-        navigate("/agendamentos");
-        setAuthentication(true);
-      }
-    }
-  }, [
-    accessTokenLogin,
-    userLogin,
-    isSuccessLogin,
-    navigate,
-    setAuthentication,
-  ]);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
