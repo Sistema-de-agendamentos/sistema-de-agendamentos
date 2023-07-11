@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField as TextFieldMaterialUI } from "@mui/material";
 
-function TextField({ name, label, type = "text", ...props }) {
+function TextField({ name, label, type = "text", disabled, ...props }) {
   const {
     control,
     clearErrors,
@@ -25,6 +25,7 @@ function TextField({ name, label, type = "text", ...props }) {
         <TextFieldMaterialUI
           label={label}
           type={type}
+          disabled={disabled}
           error={!!errorMessage}
           helperText={errorMessage}
           onFocus={clearError}

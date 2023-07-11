@@ -11,6 +11,7 @@ const StyledContentLeft = styled(Box)({
   alignItems: "center",
   justifyContent: "center",
   minWidth: "45%",
+  background: "#FFF",
 });
 
 const StyledContentRight = styled(Box)({
@@ -19,7 +20,6 @@ const StyledContentRight = styled(Box)({
   justifyContent: "center",
   width: "55%",
   padding: "10rem",
-  background: "#F5F5F5",
   boxShadow: "0 0 5px rgba(0, 0, 0, 0.05)",
   "& > form": {
     display: "flex",
