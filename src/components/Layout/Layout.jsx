@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Box, Drawer, styled } from "@mui/material";
+import { toast } from "react-toastify";
+
+import { useAuthStore } from "stores";
 
 import Button from "../Button";
 import Icon from "../Icon";
@@ -29,7 +32,7 @@ const MenuStyled = styled(Box)((props) => ({
   ...(!props["data-open"] && { transform: "translateY(-9.75rem)" }),
 }));
 
-const ButtonOpenDrawerStyled = styled(Button)((props) => ({
+const OpenDrawerButtonStyled = styled(Button)((props) => ({
   marginBottom: "0 !important",
   padding: ".75rem !important",
   justifyContent: "flex-end",
@@ -43,7 +46,21 @@ const ButtonOpenDrawerStyled = styled(Button)((props) => ({
   }),
 }));
 
+const LogoutButtonStyled = styled(Button)({
+  position: "fixed",
+  right: "2.5rem",
+  textTransform: "capitalize !important",
+  textDecoration: "none !important",
+  margin: "0 !important",
+  background: "#DDD",
+  gap: "0.75rem",
+  padding: "0.5rem 1rem 0.5rem 1.25rem !important",
+  borderRadius: "0 0 0.75rem 0.75rem",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, .3)",
+});
+
 const ContentStyled = styled(Box)({
+  width: "100%",
   margin: "2rem 2.5rem",
 });
 
@@ -65,6 +82,12 @@ const stylesCloseMenu = {
 };
 
 function Layout({ children }) {
+  const {
+    user: { login },
+    setAuthentication,
+    setUser,
+  } = useAuthStore();
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -122,17 +145,33 @@ function Layout({ children }) {
           })}
         </MenuStyled>
 
-        <ButtonOpenDrawerStyled
+        <OpenDrawerButtonStyled
           onClick={() => setOpenDrawer(!openDrawer)}
           fullWidth
           variant="inherit"
           data-open={openDrawer}
         >
           <Icon name="NavigateBefore" />
-        </ButtonOpenDrawerStyled>
+        </OpenDrawerButtonStyled>
       </DrawerStyled>
 
       <ContentStyled>{children}</ContentStyled>
+
+      <LogoutButtonStyled
+        onClick={() => {
+          toast.success("Sessão encerrada com sucesso");
+          localStorage.removeItem("user");
+
+          navigate("/");
+          setAuthentication(false);
+          setUser({});
+        }}
+        margin="none"
+        variant="inherit"
+      >
+        <span>{login}</span>
+        <Icon name="Logout" />
+      </LogoutButtonStyled>
     </ContainerStyled>
   );
 }
