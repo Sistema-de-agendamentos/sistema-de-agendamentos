@@ -52,11 +52,9 @@ const LogoutButtonStyled = styled(Button)({
   textTransform: "capitalize !important",
   textDecoration: "none !important",
   margin: "0 !important",
-  background: "#DDD",
   gap: "0.75rem",
   padding: "0.5rem 1rem 0.5rem 1.25rem !important",
   borderRadius: "0 0 0.75rem 0.75rem",
-  boxShadow: "0 1px 3px rgba(0, 0, 0, .3)",
 });
 
 const ContentStyled = styled(Box)({
@@ -167,7 +165,7 @@ function Layout({ children }) {
           setUser({});
         }}
         margin="none"
-        variant="inherit"
+        color="secondary"
       >
         <span>{login}</span>
         <Icon name="Logout" />
