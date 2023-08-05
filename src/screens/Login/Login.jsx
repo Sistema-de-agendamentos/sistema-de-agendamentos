@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useNavigate } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -29,48 +30,39 @@ function Login() {
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { clearErrors, handleSubmit } = methods;
 
-  const {
-    mutate: mutateLogin,
-    isLoading: isLoadingLogin,
-    isSuccess: isSuccessLogin,
-  } = useMutation({
-    endpoint: "/auth",
-    successText: "Autenticado com sucesso",
-    mutationOptions: {
-      onSuccess: (dataLogin = {}) => {
-        const { data: userLogin = {} } = dataLogin;
-        const { accessToken: accessTokenLogin } = userLogin;
+  const onSuccess = useCallback(
+    (queryData = {}) => {
+      const { data: user = {} } = queryData;
+      const { accessToken } = user;
 
-        localStorage.setItem("user", JSON.stringify(userLogin));
-
-        if (accessTokenLogin) {
-          navigate("/agendamentos");
-          setAuthentication(true);
-          setUser(userLogin);
-        }
-      },
+      if (accessToken) {
+        navigate("/agendamentos");
+        setAuthentication(true);
+        setUser(user);
+      }
     },
+    [navigate, setAuthentication, setUser]
+  );
+
+  const { mutate: mutateLogin, isLoading: isLoadingLogin } = useMutation({
+    endpoint: "/auth",
+    useAuthorizationHeader: false,
+    successText: "Autenticado com sucesso",
+    mutationOptions: { onSuccess },
   });
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const savedUser = JSON.parse(localStorage.getItem("user")) || {};
+  const haveSavedUser = !!Object.keys(savedUser).length;
 
-  const { isFetching: isFetchingReauthenticate } = useQuery({
+  useQuery({
     endpoint: "/auth/refresh",
+    useAuthorizationHeader: false,
     method: "POST",
-    body: { refreshToken: user?.refreshToken },
+    body: { refreshToken: savedUser.refreshToken },
     successText: "Reautenticado com sucesso",
     queryOptions: {
-      enabled: !!user && !isSuccessLogin,
-      onSuccess: (queryData = {}) => {
-        const { accessToken: accessTokenRefresh } = queryData;
-        localStorage.setItem("user", JSON.stringify(queryData));
-
-        if (accessTokenRefresh) {
-          navigate("/agendamentos");
-          setAuthentication(true);
-          setUser(queryData);
-        }
-      },
+      enabled: haveSavedUser,
+      onSuccess,
       onError: () => {
         localStorage.removeItem("user");
         setAuthentication(false);
@@ -78,7 +70,7 @@ function Login() {
     },
   });
 
-  if (isFetchingReauthenticate)
+  if (haveSavedUser)
     return (
       <LoadingPage text="Por favor aguarde, estamos reautenticando o seu login" />
     );
