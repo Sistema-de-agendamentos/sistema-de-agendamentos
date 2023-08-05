@@ -9,12 +9,13 @@ function useCustomMutation({
   method = "POST",
   mutationOptions = {},
   successText = "Operação concluída com sucesso",
+  useAuthorizationHeader = true
 }) {
   const mutationKey = key ? [key] : [endpoint, method];
 
   return useMutation(
     mutationKey,
-    (body = null) => request({ endpoint, method, body }),
+    (body = null) => request({ endpoint, method, body, useAuthorizationHeader }),
     {
       ...mutationOptions,
       onSuccess: (data) => {
