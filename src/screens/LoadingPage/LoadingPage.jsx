@@ -6,8 +6,6 @@ import { styled } from "@mui/material";
 import PublicScreen from "../../components/PublicScreen";
 
 const StyledBox = styled(Box)({
-  display: "flex",
-  justifyContent: "center",
   marginTop: "1.5rem",
 });
 

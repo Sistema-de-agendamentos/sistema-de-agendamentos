@@ -1,9 +1,21 @@
-async function request({ endpoint, method, body: data = null }) {
+async function request({
+  endpoint,
+  method,
+  body: data = null,
+  useAuthorizationHeader = true,
+}) {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const url = `${
     process.env.API_URL || "http://168.138.140.238:3000"
   }${endpoint}`;
   const body = data ? JSON.stringify(data) : null;
-  const headers = { "Content-Type": "application/json" };
+  const headers = {
+    "Content-Type": "application/json",
+    ...(useAuthorizationHeader && {
+      Authorization: `Bearer ${user.accessToken}`,
+    }),
+  };
 
   const response = await fetch(url, { method, body, headers });
   const json = await response.json();

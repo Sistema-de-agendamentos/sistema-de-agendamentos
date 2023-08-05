@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
 import { useAuthStore } from "stores";
@@ -9,7 +9,12 @@ import privateRoutes from "./private.routes";
 import publicRoutes from "./public.routes";
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
+
+  useEffect(() => {
+    if (Object.keys(user).length)
+      localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
   return (
     <Routes>

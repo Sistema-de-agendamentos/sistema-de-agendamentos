@@ -14,28 +14,32 @@ function useCustomQuery({
   body = null,
   queryOptions = {},
   successText = "",
+  useAuthorizationHeader = true,
 }) {
   const queryKey = key ? [key] : [endpoint, body];
 
-  return useQuery(queryKey, () => request({ endpoint, method, body }), {
-    enabled: false,
-    select: ({ data, datas }) => data || datas,
-    cacheTime: ONE_HOUR,
-    staleTime: ONE_HOUR,
-    retry: false,
-    refetchOnWindowFocus: false,
-    ...queryOptions,
-    onSuccess: (data) => {
-      if (successText) toast.success(successText);
-      if (queryOptions?.onSuccess) queryOptions.onSuccess(data);
-    },
-    onError: (error) => {
-      const errorMessage = error.message || error;
-      toast.error(errorMessage);
+  return useQuery(
+    queryKey,
+    () => request({ endpoint, method, body, useAuthorizationHeader }),
+    {
+      enabled: false,
+      cacheTime: ONE_HOUR,
+      staleTime: ONE_HOUR,
+      retry: false,
+      refetchOnWindowFocus: false,
+      ...queryOptions,
+      onSuccess: (data) => {
+        if (successText) toast.success(successText);
+        if (queryOptions?.onSuccess) queryOptions.onSuccess(data);
+      },
+      onError: (error) => {
+        const errorMessage = error.message || error;
+        toast.error(errorMessage);
 
-      if (queryOptions?.onError) queryOptions.onError(errorMessage);
-    },
-  });
+        if (queryOptions?.onError) queryOptions.onError(errorMessage);
+      },
+    }
+  );
 }
 
 export default useCustomQuery;

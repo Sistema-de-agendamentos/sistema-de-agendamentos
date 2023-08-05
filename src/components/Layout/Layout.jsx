@@ -17,7 +17,7 @@ const ContainerStyled = styled(Box)({
 const DrawerStyled = styled(Drawer)(({ open }) => ({
   "& .MuiDrawer-paper": {
     display: "flex",
-    position: "static",
+    position: "fixed",
     width: open ? "14rem" : "3rem",
     transition: ".3s",
     boxShadow: "0 1px 5px 0 rgba(0, 0, 0, .3)",
@@ -48,7 +48,7 @@ const OpenDrawerButtonStyled = styled(Button)((props) => ({
 
 const LogoutButtonStyled = styled(Button)({
   position: "fixed",
-  right: "2.5rem",
+  right: "3.5rem",
   textTransform: "capitalize !important",
   textDecoration: "none !important",
   margin: "0 !important",
@@ -57,14 +57,16 @@ const LogoutButtonStyled = styled(Button)({
   borderRadius: "0 0 0.75rem 0.75rem",
 });
 
-const ContentStyled = styled(Box)({
+const ContentStyled = styled(Box)((props) => ({
   width: "100%",
-  margin: "2rem 2.5rem",
-});
+  margin: "2.5rem 3.5rem 2rem",
+  marginLeft: `${(props["data-open"] ? 14 : 3) + 3.5}rem`,
+  transition: ".3s",
+}));
 
 const generateImgStyle = (open) => ({
   width: "7.5rem",
-  transition: "0.3s",
+  transition: ".3s",
   margin: "2rem auto",
   ...(!open && { transform: "translateX(-10rem)" }),
 });
@@ -76,7 +78,7 @@ const stylesOpenMenu = {
 };
 
 const stylesCloseMenu = {
-  marginLeft: "-0.625rem",
+  marginLeft: "-.25rem",
 };
 
 function Layout({ children }) {
@@ -153,7 +155,7 @@ function Layout({ children }) {
         </OpenDrawerButtonStyled>
       </DrawerStyled>
 
-      <ContentStyled>{children}</ContentStyled>
+      <ContentStyled data-open={openDrawer}>{children}</ContentStyled>
 
       <LogoutButtonStyled
         onClick={() => {
