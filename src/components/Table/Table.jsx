@@ -1,8 +1,10 @@
 import { MaterialReactTable } from "material-react-table";
+import { MRT_Localization_PT_BR as MRTLocalizationPTBR } from "material-react-table/locales/pt-BR";
 
 function Table(props) {
   return (
     <MaterialReactTable
+      localization={MRTLocalizationPTBR}
       muiTablePaperProps={{
         sx: {
           background: "none",
