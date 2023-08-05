@@ -12,12 +12,12 @@ const StyledContainerButtons = styled(Box)({
   marginBottom: "2.5rem",
 });
 
-function FiltersContainer({ children, methods }) {
+function FiltersContainer({ children, methods, submit }) {
   const { clearErrors, handleSubmit, reset } = methods;
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(() => null)}>
+      <form onSubmit={handleSubmit(submit)}>
         <Grid container columnSpacing={1} mt="2.5rem">
           {children}
         </Grid>
