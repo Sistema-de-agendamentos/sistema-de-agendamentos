@@ -6,6 +6,8 @@ import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 
+import { useQuery } from "hooks";
+
 import Icon from "../../components/Icon";
 import TextField from "../../components/TextField";
 import PageTitle from "../../components/PageTitle";
@@ -19,47 +21,57 @@ const defaultValues = {
   status: "",
 };
 
+// eslint-disable-next-line no-unused-vars
+const mock = [
+  {
+    name: { firstName: "John", lastName: "Doe" },
+    address: "261 Erdman Ford",
+    city: "East Daphne",
+    state: "Kentucky",
+  },
+  {
+    name: { firstName: "Jane", lastName: "Doe" },
+    address: "769 Dominic Grove",
+    city: "Columbus",
+    state: "Ohio",
+  },
+  {
+    name: { firstName: "Joe", lastName: "Doe" },
+    address: "566 Brakus Inlet",
+    city: "South Linda",
+    state: "West Virginia",
+  },
+  {
+    name: { firstName: "Kevin", lastName: "Vandy" },
+    address: "722 Emie Stream",
+    city: "Lincoln",
+    state: "Nebraska",
+  },
+  {
+    name: { firstName: "Joshua", lastName: "Rolluffs" },
+    address: "32188 Larkin Turnpike",
+    city: "Charleston",
+    state: "South Carolina",
+  },
+];
+
 function Agendamentos() {
   const methods = useForm({ defaultValues });
+  const { watch } = methods;
+  // eslint-disable-next-line no-unused-vars
+  const watchValues = watch();
 
-  const data = [
-    {
-      name: { firstName: "John", lastName: "Doe" },
-      address: "261 Erdman Ford",
-      city: "East Daphne",
-      state: "Kentucky",
-    },
-    {
-      name: { firstName: "Jane", lastName: "Doe" },
-      address: "769 Dominic Grove",
-      city: "Columbus",
-      state: "Ohio",
-    },
-    {
-      name: { firstName: "Joe", lastName: "Doe" },
-      address: "566 Brakus Inlet",
-      city: "South Linda",
-      state: "West Virginia",
-    },
-    {
-      name: { firstName: "Kevin", lastName: "Vandy" },
-      address: "722 Emie Stream",
-      city: "Lincoln",
-      state: "Nebraska",
-    },
-    {
-      name: { firstName: "Joshua", lastName: "Rolluffs" },
-      address: "32188 Larkin Turnpike",
-      city: "Charleston",
-      state: "South Carolina",
-    },
-  ];
+  const {
+    data = [],
+    refetch,
+    isFetching,
+  } = useQuery({ endpoint: "/agendamento" });
 
   return (
     <Fragment>
       <PageTitle title="Agendamentos" />
 
-      <FiltersContainer methods={methods}>
+      <FiltersContainer methods={methods} submit={refetch}>
         <Grid item xs={12} sm={6}>
           <TextField
             name="nome"
@@ -93,12 +105,14 @@ function Agendamentos() {
       </FiltersContainer>
 
       <Table
+        state={{ isLoading: isFetching }}
         columns={[
-          { accessorKey: "name.firstName", header: "Nome", size: 2 },
-          { accessorKey: "name.lastName", header: "Sobrenome", size: 2 },
-          { accessorKey: "address", header: "Endereço", size: 4 },
-          { accessorKey: "city", header: "Cidade", size: 2 },
-          { accessorKey: "state", header: "Estado", size: 2 },
+          { accessorKey: "dataAgendamento", header: "Data", size: 2 },
+          { accessorKey: "horarioAgendamento", header: "Horário", size: 2 },
+          { accessorKey: "nomePessoa", header: "Nome completo", size: 4 },
+          { accessorKey: "status", header: "Status", size: 2 },
+          { accessorKey: "celular", header: "Celular", size: 2 },
+          { accessorKey: "nomeProfissional", header: "Profissional", size: 4 },
           {
             accessorKey: "botoes",
             header: "",
