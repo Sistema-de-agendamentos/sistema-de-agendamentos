@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material/styles";
 
 const colors = {
   primary: "#0662DA",
-  secondary: "#E5E5E5",
+  secondary: "#DDD",
 };
 
 const theme = createTheme({
@@ -18,13 +18,21 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
+          padding: ".5rem 1rem .4375rem 1rem !important",
           fontWeight: "bold",
           "&.MuiButton-inherit": {
-            padding: "0.5rem 1.375rem",
+            padding: ".5rem 1.375rem",
             textDecoration: "underline",
             textTransform: "none",
             color: "#333",
             fontSize: "0.9375rem",
+          },
+        },
+        containedSecondary: {
+          boxShadow: "0 1px 3px rgba(0, 0, 0, .3)",
+          "&:hover": {
+            backgroundColor: "#CCC",
+            boxShadow: "0 2px 3px rgba(0, 0, 0, .3)",
           },
         },
       },

@@ -24,7 +24,7 @@ const schema = yup.object().shape({
 
 function Login() {
   const navigate = useNavigate();
-  const { setAuthentication } = useAuthStore();
+  const { setAuthentication, setUser } = useAuthStore();
 
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { clearErrors, handleSubmit } = methods;
@@ -46,6 +46,7 @@ function Login() {
         if (accessTokenLogin) {
           navigate("/agendamentos");
           setAuthentication(true);
+          setUser(userLogin);
         }
       },
     },
@@ -67,6 +68,7 @@ function Login() {
         if (accessTokenRefresh) {
           navigate("/agendamentos");
           setAuthentication(true);
+          setUser(queryData);
         }
       },
       onError: () => {
