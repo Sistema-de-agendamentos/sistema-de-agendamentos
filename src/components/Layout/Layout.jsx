@@ -111,10 +111,10 @@ function Layout({ children }) {
     { path: "/agendamentos", icon: "CalendarMonth", text: "Agendamentos" },
     { path: "/atendimentos", icon: "Assignment", text: "Atendimentos" },
     { path: "/clientes", icon: "SwitchAccount", text: "Clientes" },
-    { path: "/usuarios", icon: "Badge", text: "Usuários" },
-    { path: "/organizacoes", icon: "Business", text: "Organizações" },
-    { path: "/configuracoes", icon: "Settings", text: "Configurações" },
-    { path: "/configuradores", icon: "WatchLater", text: "Configuradores" },
+    // { path: "/usuarios", icon: "Badge", text: "Usuários" },
+    // { path: "/organizacoes", icon: "Business", text: "Organizações" },
+    // { path: "/configuracoes", icon: "Settings", text: "Configurações" },
+    // { path: "/configuradores", icon: "WatchLater", text: "Configuradores" },
   ];
 
   return (
