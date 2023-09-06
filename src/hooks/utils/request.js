@@ -6,9 +6,7 @@ async function request({
 }) {
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const url = `${
-    process.env.API_URL || "http://168.138.140.238:3000"
-  }${endpoint}`;
+  const url = `${process.env.REACT_APP_API_URL}${endpoint}`;
   const body = data ? JSON.stringify(data) : null;
   const headers = {
     "Content-Type": "application/json",
