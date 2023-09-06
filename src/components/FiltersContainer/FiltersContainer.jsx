@@ -12,7 +12,7 @@ const StyledContainerButtons = styled(Box)({
   marginBottom: "2.5rem",
 });
 
-function FiltersContainer({ children, methods, submit }) {
+function FiltersContainer({ children, methods, submit, defaultValues }) {
   const { clearErrors, handleSubmit, reset } = methods;
 
   return (
@@ -24,7 +24,7 @@ function FiltersContainer({ children, methods, submit }) {
 
         <StyledContainerButtons>
           <Button
-            onClick={reset}
+            onClick={() => reset(defaultValues)}
             size="medium"
             color="secondary"
             style={{ margin: 0 }}
