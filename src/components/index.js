@@ -1,6 +1,7 @@
 import App from "./App";
 import AuthProvider from "./AuthProvider";
 import Button from "./Button";
+import ConfirmationModal from "./ConfirmationModal";
 import Dialog from "./Dialog";
 import FiltersContainer from "./FiltersContainer";
 import Icon from "./Icon";
@@ -15,6 +16,7 @@ export {
   App,
   AuthProvider,
   Button,
+  ConfirmationModal,
   Dialog,
   FiltersContainer,
   Icon,
