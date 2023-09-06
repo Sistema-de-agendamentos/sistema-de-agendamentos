@@ -1,80 +1,101 @@
 /* eslint-disable no-console */
-import { Fragment } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 
-import { useQuery } from "hooks";
+import { useMutation, useQuery } from "hooks";
+import { generateQueryString } from "utils";
+import { date, phone } from "utils/addMask";
 
-import Icon from "../../components/Icon";
-import TextField from "../../components/TextField";
-import PageTitle from "../../components/PageTitle";
+import Button from "../../components/Button";
+import ConfirmationModal from "../../components/ConfirmationModal";
 import FiltersContainer from "../../components/FiltersContainer";
+import Icon from "../../components/Icon";
+import PageTitle from "../../components/PageTitle";
 import Table from "../../components/Table";
+import TextField from "../../components/TextField";
+// eslint-disable-next-line import/no-cycle
+import ModalEditScheduling from "./ModalEditScheduling";
+
+const endpoint = "/agendamento";
 
 const defaultValues = {
-  nome: "",
-  data: "",
-  celular: "",
+  dataInicio: "",
+  dataFim: "",
+  cliente: "",
+  dataAgendamento: "",
+  celularCliente: "",
   status: "",
 };
 
-// eslint-disable-next-line no-unused-vars
-const mock = [
-  {
-    name: { firstName: "John", lastName: "Doe" },
-    address: "261 Erdman Ford",
-    city: "East Daphne",
-    state: "Kentucky",
-  },
-  {
-    name: { firstName: "Jane", lastName: "Doe" },
-    address: "769 Dominic Grove",
-    city: "Columbus",
-    state: "Ohio",
-  },
-  {
-    name: { firstName: "Joe", lastName: "Doe" },
-    address: "566 Brakus Inlet",
-    city: "South Linda",
-    state: "West Virginia",
-  },
-  {
-    name: { firstName: "Kevin", lastName: "Vandy" },
-    address: "722 Emie Stream",
-    city: "Lincoln",
-    state: "Nebraska",
-  },
-  {
-    name: { firstName: "Joshua", lastName: "Rolluffs" },
-    address: "32188 Larkin Turnpike",
-    city: "Charleston",
-    state: "South Carolina",
-  },
-];
-
 function Agendamentos() {
+  const [openModalEditScheduling, setOpenModalEditScheduling] = useState(false);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+  const [rowData, setRowData] = useState(null);
+  const [idAgendamento, setIdAgendamento] = useState(null);
+
   const methods = useForm({ defaultValues });
   const { watch } = methods;
-  // eslint-disable-next-line no-unused-vars
   const watchValues = watch();
 
   const {
     data = [],
     refetch,
     isFetching,
-  } = useQuery({ endpoint: "/agendamento" });
+  } = useQuery({ endpoint: `${endpoint}${generateQueryString(watchValues)}` });
+
+  const onCloseConfirmationModal = useCallback(() => {
+    setIdAgendamento(null);
+    setOpenConfirmationModal(false);
+  }, []);
+
+  const { mutate } = useMutation({
+    endpoint: `${endpoint}`,
+    method: "DELETE",
+    mutationOptions: { onSuccess: onCloseConfirmationModal },
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <Fragment>
       <PageTitle title="Agendamentos" />
 
-      <FiltersContainer methods={methods} submit={refetch}>
+      <FiltersContainer
+        methods={methods}
+        submit={refetch}
+        defaultValues={defaultValues}
+      >
         <Grid item xs={12} sm={6}>
           <TextField
-            name="nome"
+            name="dataInicio"
+            label="Data inicial"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            margin="none"
+            size="small"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            name="dataFim"
+            label="Data final"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            margin="none"
+            size="small"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            name="cliente"
             label="Nome do cliente"
             margin="none"
             size="small"
@@ -83,8 +104,9 @@ function Agendamentos() {
 
         <Grid item xs={12} sm={6}>
           <TextField
-            name="data"
+            name="dataAgendamento"
             label="Data da consulta"
+            type="date"
             margin="none"
             size="small"
           />
@@ -92,7 +114,7 @@ function Agendamentos() {
 
         <Grid item xs={12} sm={6}>
           <TextField
-            name="celular"
+            name="celularCliente"
             label="Celular"
             margin="none"
             size="small"
@@ -107,23 +129,36 @@ function Agendamentos() {
       <Table
         state={{ isLoading: isFetching }}
         columns={[
-          { accessorKey: "dataAgendamento", header: "Data", size: 2 },
+          {
+            accessorKey: "dataAgendamento",
+            header: "Data",
+            size: 2,
+            Cell: ({ row: { original } }) => date(original.dataAgendamento),
+          },
           { accessorKey: "horarioAgendamento", header: "Horário", size: 2 },
-          { accessorKey: "nomePessoa", header: "Nome completo", size: 4 },
-          { accessorKey: "status", header: "Status", size: 2 },
-          { accessorKey: "celular", header: "Celular", size: 2 },
-          { accessorKey: "nomeProfissional", header: "Profissional", size: 4 },
+          { accessorKey: "cliente", header: "Nome completo", size: 5 },
+          { accessorKey: "status", header: "Status", size: 4 },
+          {
+            accessorKey: "celularCliente",
+            header: "Celular",
+            size: 3,
+            Cell: ({ row: { original } }) => phone(original.celularCliente),
+          },
+          { accessorKey: "profissional", header: "Profissional", size: 5 },
           {
             accessorKey: "botoes",
             header: "",
             enableColumnActions: false,
             size: 1,
             Cell: ({ row: { original } }) => (
-              <Box sx={{ display: "flex", margin: "-.75rem .5rem" }}>
+              <Box sx={{ display: "flex", margin: "-.375rem -1rem" }}>
                 <Tooltip arrow placement="left" title="Excluir">
                   <IconButton
                     color="error"
-                    onClick={() => console.log("Delete", original)}
+                    onClick={() => {
+                      setIdAgendamento([original.idAgendamento]);
+                      setOpenConfirmationModal(true);
+                    }}
                     style={{ padding: ".25rem" }}
                   >
                     <Icon name="Delete" />
@@ -132,7 +167,10 @@ function Agendamentos() {
 
                 <Tooltip arrow placement="right" title="Editar">
                   <IconButton
-                    onClick={() => console.log("Edit", original)}
+                    onClick={() => {
+                      setOpenModalEditScheduling(true);
+                      setRowData(original);
+                    }}
                     style={{ padding: ".25rem" }}
                   >
                     <Icon name="Edit" />
@@ -144,6 +182,38 @@ function Agendamentos() {
         ]}
         data={data}
       />
+
+      <Button
+        onClick={() => {
+          setOpenModalEditScheduling(true);
+          setRowData({});
+        }}
+        size="medium"
+        style={{ float: "right", margin: "1.25rem 0 0" }}
+      >
+        Agendar
+      </Button>
+
+      {rowData && (
+        <ModalEditScheduling
+          open={openModalEditScheduling}
+          onClose={() => {
+            setOpenModalEditScheduling(false);
+            setTimeout(() => setRowData(null), 300);
+          }}
+          rowData={rowData}
+        />
+      )}
+
+      {openConfirmationModal && (
+        <ConfirmationModal
+          open={openConfirmationModal}
+          onClose={onCloseConfirmationModal}
+          onConfirm={() => mutate(idAgendamento)}
+          title="Excluir agendamento?"
+          text="Deseja realmente excluir o agendamento? Essa operação não poderá ser desfeita."
+        />
+      )}
     </Fragment>
   );
 }
