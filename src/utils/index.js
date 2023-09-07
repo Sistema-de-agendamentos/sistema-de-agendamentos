@@ -1,4 +1,4 @@
-import addMask from "./addMask";
 import generateQueryString from "./generateQueryString";
 
-export { addMask, generateQueryString };
+// eslint-disable-next-line import/prefer-default-export
+export { generateQueryString };
