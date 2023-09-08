@@ -4,6 +4,7 @@ import { Box, Drawer, styled } from "@mui/material";
 import { toast } from "react-toastify";
 
 import { useAuthStore } from "stores";
+import { useQuery } from "hooks";
 
 import Button from "../Button";
 import Icon from "../Icon";
@@ -117,6 +118,21 @@ function Layout({ children }) {
     // { path: "/configuradores", icon: "WatchLater", text: "Configuradores" },
   ];
 
+  const { refetch: mutateLogout, isFetching: isLoadingLogout } = useQuery({
+    endpoint: "/auth/logout",
+    method: "POST",
+    queryOptions: {
+      onSuccess: () => {
+        toast.success("Sessão encerrada com sucesso");
+        localStorage.removeItem("user");
+
+        navigate("/");
+        setAuthentication(false);
+        setUser({});
+      },
+    },
+  });
+
   return (
     <ContainerStyled>
       <DrawerStyled variant="permanent" open={openDrawer}>
@@ -158,14 +174,8 @@ function Layout({ children }) {
       <ContentStyled data-open={openDrawer}>{children}</ContentStyled>
 
       <LogoutButtonStyled
-        onClick={() => {
-          toast.success("Sessão encerrada com sucesso");
-          localStorage.removeItem("user");
-
-          navigate("/");
-          setAuthentication(false);
-          setUser({});
-        }}
+        onClick={mutateLogout}
+        isLoading={isLoadingLogout}
         margin="none"
         color="secondary"
       >
