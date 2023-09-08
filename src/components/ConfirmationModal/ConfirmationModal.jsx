@@ -13,18 +13,24 @@ const StyledDialogActions = styled(DialogActions)({
   margin: "0 1rem 1rem 1rem",
 });
 
-const StyledDialogContent = styled(DialogContent)({
-});
+const StyledDialogContent = styled(DialogContent)({});
 
 function CustomSlide(props) {
   return <Slide direction="up" {...props} />;
 }
 
-function ConfirmationModal({ open, onConfirm, onClose, title, text }) {
+function ConfirmationModal({
+  open,
+  onConfirm,
+  onClose,
+  title,
+  text,
+  isLoading,
+}) {
   return (
     <DialogMUI
       open={open}
-      onClose={onClose}
+      onClose={isLoading ? null : () => onClose()}
       fullWidth
       maxWidth="xs"
       TransitionComponent={CustomSlide}
@@ -38,6 +44,7 @@ function ConfirmationModal({ open, onConfirm, onClose, title, text }) {
       <StyledDialogActions>
         <Button
           onClick={onConfirm}
+          isLoading={isLoading}
           size="small"
           color="error"
           style={{ margin: 0 }}
@@ -46,7 +53,8 @@ function ConfirmationModal({ open, onConfirm, onClose, title, text }) {
         </Button>
 
         <Button
-          onClick={onClose}
+          onClick={() => onClose()}
+          disabled={isLoading}
           size="small"
           color="secondary"
           style={{ margin: 0 }}

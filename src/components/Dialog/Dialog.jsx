@@ -14,7 +14,7 @@ const StyledDialogActions = styled(DialogActions)({
 });
 
 const StyledDialogContent = styled(DialogContent)({
-  marginTop: "1rem",
+  paddingTop: "0 !important",
 });
 
 function CustomSlide(props) {
@@ -23,8 +23,10 @@ function CustomSlide(props) {
 
 function Dialog({
   open,
+  onConfirm,
   onClose,
   title,
+  isLoading,
   fullWidth = true,
   maxWidth = "sm",
   children,
@@ -32,7 +34,7 @@ function Dialog({
   return (
     <DialogMUI
       open={open}
-      onClose={onClose}
+      onClose={isLoading ? null : onClose}
       fullWidth={fullWidth}
       maxWidth={maxWidth}
       TransitionComponent={CustomSlide}
@@ -45,8 +47,8 @@ function Dialog({
 
       <StyledDialogActions>
         <Button
-          type="submit"
-          onClick={onClose}
+          onClick={onConfirm}
+          isLoading={isLoading}
           size="small"
           style={{ margin: 0 }}
         >
@@ -55,6 +57,7 @@ function Dialog({
 
         <Button
           onClick={onClose}
+          disabled={isLoading}
           size="small"
           color="secondary"
           style={{ margin: 0 }}

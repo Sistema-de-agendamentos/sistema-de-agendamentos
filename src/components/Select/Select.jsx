@@ -6,7 +6,14 @@ import {
   InputLabel,
 } from "@mui/material";
 
-function Select({ name, label, fullWidth = true, children, ...props }) {
+function Select({
+  name,
+  label,
+  fullWidth = true,
+  children,
+  margin = "normal",
+  ...props
+}) {
   const {
     control,
     clearErrors,
@@ -22,16 +29,14 @@ function Select({ name, label, fullWidth = true, children, ...props }) {
       name={name}
       control={control}
       render={({ field }) => (
-        <FormControl fullWidth={fullWidth}>
+        <FormControl fullWidth={fullWidth} margin={margin}>
           <InputLabel
             style={{
               position: "absolute",
-              top: 10,
-              left: 10,
+              top: "1rem",
+              left: "-.25rem",
               background: "#fff",
-              display: "block",
-              zIndex: 1300,
-              padding: "0 0.5rem",
+              padding: "0 0.25rem",
             }}
           >
             {label}
@@ -41,7 +46,7 @@ function Select({ name, label, fullWidth = true, children, ...props }) {
             error={!!errorMessage}
             helperText={errorMessage}
             onFocus={clearError}
-            margin="normal"
+            margin={margin}
             variant="outlined"
             style={{ margin: "1rem 0 0.5rem 0" }}
             {...field}

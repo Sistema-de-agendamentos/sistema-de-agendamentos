@@ -47,15 +47,19 @@ function Agendamentos() {
     isFetching,
   } = useQuery({ endpoint: `${endpoint}${generateQueryString(watchValues)}` });
 
-  const onCloseConfirmationModal = useCallback(() => {
-    setIdAgendamento(null);
-    setOpenConfirmationModal(false);
-  }, []);
+  const onCloseConfirmationModal = useCallback(
+    (getData) => {
+      if (getData) refetch();
+      setIdAgendamento(null);
+      setOpenConfirmationModal(false);
+    },
+    [refetch]
+  );
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading: isLoadingDeleting } = useMutation({
     endpoint: `${endpoint}`,
     method: "DELETE",
-    mutationOptions: { onSuccess: onCloseConfirmationModal },
+    mutationOptions: { onSuccess: () => onCloseConfirmationModal(true) },
   });
 
   useEffect(() => {
@@ -107,6 +111,7 @@ function Agendamentos() {
             name="dataAgendamento"
             label="Data da consulta"
             type="date"
+            InputLabelProps={{ shrink: true }}
             margin="none"
             size="small"
           />
@@ -136,15 +141,28 @@ function Agendamentos() {
             Cell: ({ row: { original } }) => date(original.dataAgendamento),
           },
           { accessorKey: "horarioAgendamento", header: "Horário", size: 2 },
-          { accessorKey: "cliente", header: "Nome completo", size: 5 },
-          { accessorKey: "status", header: "Status", size: 4 },
           {
-            accessorKey: "celularCliente",
+            accessorKey: "pessoaAgendamento.nome",
+            header: "Nome completo",
+            size: 5,
+          },
+          {
+            accessorKey: "statusAgendamento.status",
+            header: "Status",
+            size: 4,
+          },
+          {
+            accessorKey: "pessoaAgendamento.celular",
             header: "Celular",
             size: 3,
-            Cell: ({ row: { original } }) => phone(original.celularCliente),
+            Cell: ({ row: { original } }) =>
+              phone(original.pessoaAgendamento?.celular),
           },
-          { accessorKey: "profissional", header: "Profissional", size: 5 },
+          {
+            accessorKey: "profissionalAgendamento.login",
+            header: "Profissional",
+            size: 5,
+          },
           {
             accessorKey: "botoes",
             header: "",
@@ -189,7 +207,7 @@ function Agendamentos() {
           setRowData({});
         }}
         size="medium"
-        style={{ float: "right", margin: "1.25rem 0 0" }}
+        style={{ float: "right", margin: "1.25rem 0 .5rem" }}
       >
         Agendar
       </Button>
@@ -197,7 +215,8 @@ function Agendamentos() {
       {rowData && (
         <ModalEditScheduling
           open={openModalEditScheduling}
-          onClose={() => {
+          onClose={(getData) => {
+            if (getData) refetch();
             setOpenModalEditScheduling(false);
             setTimeout(() => setRowData(null), 300);
           }}
@@ -210,6 +229,7 @@ function Agendamentos() {
           open={openConfirmationModal}
           onClose={onCloseConfirmationModal}
           onConfirm={() => mutate(idAgendamento)}
+          isLoading={isLoadingDeleting}
           title="Excluir agendamento?"
           text="Deseja realmente excluir o agendamento? Essa operação não poderá ser desfeita."
         />
