@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -30,18 +30,26 @@ function Login() {
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { clearErrors, handleSubmit } = methods;
 
-  const onSuccess = useCallback(
-    (queryData = {}) => {
-      const { data: user = {} } = queryData;
-      const { accessToken } = user;
+  const savedUser = useMemo(
+    () => JSON.parse(localStorage.getItem("user")) || {},
+    []
+  );
+  const haveSavedUser = !!Object.keys(savedUser).length;
 
-      if (accessToken) {
+  const onSuccess = useCallback(
+    (queryData) => {
+      if (queryData?.data?.accessToken || queryData?.refreshToken) {
+        const newUser = queryData?.data || {
+          ...savedUser,
+          refreshToken: queryData?.refreshToken,
+        };
+
         navigate("/agendamentos");
         setAuthentication(true);
-        setUser(user);
+        setUser(newUser);
       }
     },
-    [navigate, setAuthentication, setUser]
+    [navigate, savedUser, setAuthentication, setUser]
   );
 
   const { mutate: mutateLogin, isLoading: isLoadingLogin } = useMutation({
@@ -50,9 +58,6 @@ function Login() {
     successText: "Autenticado com sucesso",
     mutationOptions: { onSuccess },
   });
-
-  const savedUser = JSON.parse(localStorage.getItem("user")) || {};
-  const haveSavedUser = !!Object.keys(savedUser).length;
 
   useQuery({
     endpoint: "/auth/refresh",
