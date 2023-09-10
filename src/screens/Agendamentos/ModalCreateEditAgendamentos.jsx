@@ -20,7 +20,7 @@ const initialValues = {
   statusAgendamento: "",
 };
 
-function ModalEditScheduling({ open, onClose, rowData }) {
+function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
   const isNew = useMemo(() => !Object.keys(rowData).length, [rowData]);
 
   const defaultValues = useMemo(() => {
@@ -248,4 +248,4 @@ function ModalEditScheduling({ open, onClose, rowData }) {
   );
 }
 
-export default ModalEditScheduling;
+export default ModalCreateEditAgendamentos;

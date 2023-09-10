@@ -18,7 +18,7 @@ import PageTitle from "../../components/PageTitle";
 import Table from "../../components/Table";
 import TextField from "../../components/TextField";
 // eslint-disable-next-line import/no-cycle
-import ModalEditScheduling from "./ModalEditScheduling";
+import ModalCreateEditAgendamentos from "./ModalCreateEditAgendamentos";
 
 const endpoint = "/agendamento";
 
@@ -32,7 +32,8 @@ const defaultValues = {
 };
 
 function Agendamentos() {
-  const [openModalEditScheduling, setOpenModalEditScheduling] = useState(false);
+  const [openModalCreateEditAgendamentos, setOpenModalCreateEditAgendamentos] =
+    useState(false);
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [rowData, setRowData] = useState(null);
   const [idAgendamento, setIdAgendamento] = useState(null);
@@ -186,7 +187,7 @@ function Agendamentos() {
                 <Tooltip arrow placement="right" title="Editar">
                   <IconButton
                     onClick={() => {
-                      setOpenModalEditScheduling(true);
+                      setOpenModalCreateEditAgendamentos(true);
                       setRowData(original);
                     }}
                     style={{ padding: ".25rem" }}
@@ -203,7 +204,7 @@ function Agendamentos() {
 
       <Button
         onClick={() => {
-          setOpenModalEditScheduling(true);
+          setOpenModalCreateEditAgendamentos(true);
           setRowData({});
         }}
         size="medium"
@@ -213,11 +214,11 @@ function Agendamentos() {
       </Button>
 
       {rowData && (
-        <ModalEditScheduling
-          open={openModalEditScheduling}
+        <ModalCreateEditAgendamentos
+          open={openModalCreateEditAgendamentos}
           onClose={(getData) => {
             if (getData) refetch();
-            setOpenModalEditScheduling(false);
+            setOpenModalCreateEditAgendamentos(false);
             setTimeout(() => setRowData(null), 300);
           }}
           rowData={rowData}
