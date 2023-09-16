@@ -29,25 +29,25 @@ function Table({ state, ...rest }) {
           margin: ".25rem 0",
           borderRadius: ".25rem",
           boxShadow: "0 1px 3px rgba(0, 0, 0, .2)",
-          // height: "2.5rem",
         },
       }}
       muiTableBodyCellProps={({ column }) => {
         return {
           sx: {
-            flex: column.columnDef.size,
+            flex:
+              column.id === "mrt-row-expand" ? 1 : column.columnDef.size || 1,
             borderBottom: "none",
             background: "none",
-            // lineHeight: ".625",
           },
         };
       }}
       muiTableHeadCellProps={({ column }) => {
         return {
           sx: {
+            flex:
+              column.id === "mrt-row-expand" ? 1 : column.columnDef.size || 1,
             borderBottom: "none",
             background: "none",
-            flex: column.columnDef.size,
           },
         };
       }}
