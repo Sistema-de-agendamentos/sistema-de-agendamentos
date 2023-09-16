@@ -5,12 +5,15 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Skeleton from "@mui/material/Skeleton";
 
 import { useMutation, useQuery } from "hooks";
 import { generateQueryString } from "utils";
 import { date, phone } from "utils/addMask";
 
 import Button from "../../components/Button";
+import Select from "../../components/Select";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import FiltersContainer from "../../components/FiltersContainer";
 import Icon from "../../components/Icon";
@@ -25,10 +28,10 @@ const endpoint = "/agendamento";
 const defaultValues = {
   dataInicio: "",
   dataFim: "",
-  cliente: "",
+  nomePessoa: "",
   dataAgendamento: "",
-  celularCliente: "",
-  status: "",
+  celularPessoa: "",
+  idStatus: 1,
 };
 
 function Agendamentos() {
@@ -37,6 +40,14 @@ function Agendamentos() {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [rowData, setRowData] = useState(null);
   const [idAgendamento, setIdAgendamento] = useState(null);
+
+  const {
+    data: statusAgendamento = [],
+    isFetching: isFetchingStatusAgendamento,
+  } = useQuery({
+    endpoint: "/statusAgendamento",
+    queryOptions: { enabled: true },
+  });
 
   const methods = useForm({ defaultValues });
   const { watch } = methods;
@@ -59,6 +70,7 @@ function Agendamentos() {
 
   const { mutate, isLoading: isLoadingDeleting } = useMutation({
     endpoint: `${endpoint}`,
+    body: [idAgendamento],
     method: "DELETE",
     mutationOptions: { onSuccess: () => onCloseConfirmationModal(true) },
   });
@@ -82,6 +94,7 @@ function Agendamentos() {
             label="Data inicial"
             type="date"
             InputLabelProps={{ shrink: true }}
+            disabled={isFetching}
             margin="none"
             size="small"
           />
@@ -93,6 +106,7 @@ function Agendamentos() {
             label="Data final"
             type="date"
             InputLabelProps={{ shrink: true }}
+            disabled={isFetching}
             margin="none"
             size="small"
           />
@@ -100,8 +114,9 @@ function Agendamentos() {
 
         <Grid item xs={12} sm={6}>
           <TextField
-            name="cliente"
+            name="nomePessoa"
             label="Nome do cliente"
+            disabled={isFetching}
             margin="none"
             size="small"
           />
@@ -113,6 +128,7 @@ function Agendamentos() {
             label="Data da consulta"
             type="date"
             InputLabelProps={{ shrink: true }}
+            disabled={isFetching}
             margin="none"
             size="small"
           />
@@ -120,15 +136,34 @@ function Agendamentos() {
 
         <Grid item xs={12} sm={6}>
           <TextField
-            name="celularCliente"
+            name="celularPessoa"
             label="Celular"
+            disabled={isFetching}
             margin="none"
             size="small"
           />
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <TextField name="status" label="Status" margin="none" size="small" />
+          {isFetchingStatusAgendamento ? (
+            <Skeleton
+              height="3.5rem"
+              style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
+            />
+          ) : (
+            <Select
+              name="idStatus"
+              label="Status"
+              margin="none"
+              disabled={!statusAgendamento.length || isFetching}
+            >
+              {statusAgendamento.map(({ id, status }) => (
+                <MenuItem key={id} value={id}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
         </Grid>
       </FiltersContainer>
 
@@ -175,7 +210,7 @@ function Agendamentos() {
                   <IconButton
                     color="error"
                     onClick={() => {
-                      setIdAgendamento([original.idAgendamento]);
+                      setIdAgendamento([original.id]);
                       setOpenConfirmationModal(true);
                     }}
                     style={{ padding: ".25rem" }}
