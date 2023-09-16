@@ -89,7 +89,10 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
       mutate({
         ...{ id: rowData?.id },
         dataAgendamento,
-        horarioAgendamento: `${horarioAgendamento}:00`,
+        horarioAgendamento:
+          horarioAgendamento.length === 5
+            ? `${horarioAgendamento}:00`
+            : horarioAgendamento,
         ...valuesFormatted,
       });
     },
