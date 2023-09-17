@@ -15,7 +15,7 @@ async function request({
     }),
   };
 
-  const response = await fetch(url, { method, body, headers });
+  const response = await fetch(url, { method, body, headers, mode: "cors" });
   const json = await response.json();
 
   if (response.ok) return json;
