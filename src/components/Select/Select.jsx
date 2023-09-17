@@ -12,6 +12,7 @@ function Select({
   fullWidth = true,
   children,
   margin = "normal",
+  size = "medium",
   ...props
 }) {
   const {
@@ -29,13 +30,12 @@ function Select({
       name={name}
       control={control}
       render={({ field }) => (
-        <FormControl fullWidth={fullWidth} margin={margin}>
+        <FormControl fullWidth={fullWidth} margin={margin} size={size}>
           <InputLabel
             style={{
               position: "absolute",
-              top: "1rem",
+              top: margin !== "none" && "1rem",
               left: "-.25rem",
-              background: "#fff",
               padding: "0 0.25rem",
             }}
           >
@@ -43,12 +43,14 @@ function Select({
           </InputLabel>
 
           <SelectMaterialUI
+            label={label}
             error={!!errorMessage}
             helperText={errorMessage}
             onFocus={clearError}
             margin={margin}
+            size={size}
             variant="outlined"
-            style={{ margin: "1rem 0 0.5rem 0" }}
+            style={{ margin: margin !== "none" && "1rem 0 0.5rem 0" }}
             {...field}
             {...props}
           >

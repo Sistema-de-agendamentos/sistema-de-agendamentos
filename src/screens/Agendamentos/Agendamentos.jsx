@@ -147,15 +147,16 @@ function Agendamentos() {
         <Grid item xs={12} sm={6}>
           {isFetchingStatusAgendamento ? (
             <Skeleton
-              height="3.5rem"
-              style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
+              height="2.5rem"
+              style={{ transform: "scale(1)", margin: "0 0 .9375rem" }}
             />
           ) : (
             <Select
               name="idStatus"
               label="Status"
-              margin="none"
               disabled={!statusAgendamento.length || isFetching}
+              margin="none"
+              size="small"
             >
               {statusAgendamento.map(({ id, status }) => (
                 <MenuItem key={id} value={id}>
