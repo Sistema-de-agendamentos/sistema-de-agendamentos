@@ -59,7 +59,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
         isLoading={isLoading}
       >
         <Grid container spacing={1}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <TextField
               name="dataAtendimento"
               label="Data"
@@ -70,28 +70,31 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <TextField
               name="avaliacao"
               label="Avaliação"
+              multiline
               disabled={isLoading}
               style={{ margin: "1rem 0 .5rem" }}
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <TextField
               name="atividade"
               label="Atividade"
+              multiline
               disabled={isLoading}
               style={{ margin: "1rem 0 .5rem" }}
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <TextField
               name="evolucaoSintomas"
               label="Evolução dos sintomas"
+              multiline
               disabled={isLoading}
               style={{ margin: "1rem 0 .5rem" }}
             />

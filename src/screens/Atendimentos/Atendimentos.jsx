@@ -110,15 +110,16 @@ function Atendimentos() {
         <Grid item xs={12} sm={6}>
           {isFetchingClientes ? (
             <Skeleton
-              height="3.5rem"
-              style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
+              height="2.5rem"
+              style={{ transform: "scale(1)", margin: "0 0 .9375rem" }}
             />
           ) : (
             <Select
               name="pessoaId"
               label="Cliente"
-              margin="none"
               disabled={!clientes.length || isFetching}
+              margin="none"
+              size="small"
             >
               {clientes.map(({ id, nome }) => (
                 <MenuItem key={id} value={id}>
@@ -149,11 +150,7 @@ function Atendimentos() {
             size: 2,
             Cell: ({ row: { original } }) => date(original.dataAtendimento),
           },
-          {
-            accessorKey: "historicoPessoa.nomePessoa",
-            header: "Nome completo",
-            size: 5,
-          },
+          { accessorKey: "pessoa.nome", header: "Nome completo", size: 5 },
           { accessorKey: "atividade", header: "Atividade", size: 3 },
           { accessorKey: "usuario.login", header: "Profissional", size: 5 },
           {
@@ -193,21 +190,34 @@ function Atendimentos() {
         ]}
         data={data}
         renderDetailPanel={({ row: { original } }) => {
-          return (
-            <Box display="flex" flexDirection="column" gap="1rem" p="1rem">
-              <Box>
-                <Typography variant="subtitle2">Avaliação</Typography>
-                <Typography variant="body2">{original.avaliacao}</Typography>
-              </Box>
+          if (!original.avaliacao && !original.evolucaoSintomas)
+            return (
+              <Typography variant="body2">
+                Não há dados para serem exibidos
+              </Typography>
+            );
 
-              <Box>
-                <Typography variant="subtitle2">
-                  Evolução dos sintomas
-                </Typography>
-                <Typography variant="body2">
-                  {original.evolucaoSintomas}
-                </Typography>
-              </Box>
+          return (
+            <Box display="flex" flexDirection="column" gap="1rem">
+              {original.avaliacao && (
+                <Box>
+                  <Typography variant="subtitle2" fontWeight="bold">
+                    Avaliação
+                  </Typography>
+                  <Typography variant="body2">{original.avaliacao}</Typography>
+                </Box>
+              )}
+
+              {original.evolucaoSintomas && (
+                <Box>
+                  <Typography variant="subtitle2" fontWeight="bold">
+                    Evolução dos sintomas
+                  </Typography>
+                  <Typography variant="body2">
+                    {original.evolucaoSintomas}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           );
         }}
