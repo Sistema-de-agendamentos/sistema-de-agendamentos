@@ -37,15 +37,8 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
   }, [rowData]);
 
   const methods = useForm({ defaultValues });
-  const { handleSubmit } = methods;
-
-  const {
-    data: tiposAgendamento = [],
-    isFetching: isFetchingTiposAgendamento,
-  } = useQuery({
-    endpoint: "/tipoAgendamento",
-    queryOptions: { enabled: true },
-  });
+  const { handleSubmit, watch } = methods;
+  const watchValues = watch();
 
   const { data: clientes = [], isFetching: isFetchingClientes } = useQuery({
     endpoint: "/pessoa",
@@ -54,15 +47,50 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
 
   const { data: organizacoes = [], isFetching: isFetchingOrganizacoes } =
     useQuery({
-      endpoint: "/organizacao",
+      endpoint: "/organizacao/bot/",
       queryOptions: { enabled: true },
     });
 
+  const {
+    data: tiposAgendamento = [],
+    isFetching: isFetchingTiposAgendamento,
+  } = useQuery({
+    endpoint: `/tipoAgendamento/bot?organizacoes=${watchValues.organizacaoAgendamento}`,
+    queryOptions: { enabled: !!watchValues.organizacaoAgendamento },
+  });
+
   const { data: profissionais = [], isFetching: isFetchingProfissionais } =
     useQuery({
-      endpoint: "/usuario",
-      queryOptions: { enabled: true },
+      endpoint: `/usuario/bot?organizacao=${watchValues.organizacaoAgendamento}&dataAgendamento=${watchValues.dataAgendamento}&tipoAgendamento=${watchValues.tipoAgendamento}&comPreferencia=true`,
+      queryOptions: {
+        enabled:
+          !!watchValues.organizacaoAgendamento &&
+          !!watchValues.dataAgendamento &&
+          !!watchValues.tipoAgendamento,
+      },
     });
+
+  const { data: horarios = [], isFetching: isFetchingHorarios } = useQuery({
+    endpoint: `/agendamento/bot/listar?reagendar=${!isNew}`,
+    method: "POST",
+    body: {
+      tipoAgendamento: { id: watchValues.tipoAgendamento },
+      pessoaAgendamento: { id: watchValues.pessoaAgendamento },
+      dataAgendamento: watchValues.dataAgendamento,
+      profissionalAgendamento: { id: watchValues.profissionalAgendamento },
+      organizacaoAgendamento: { id: watchValues.organizacaoAgendamento },
+      comPreferencia: true,
+    },
+    queryOptions: {
+      enabled:
+        !!watchValues.tipoAgendamento &&
+        !!watchValues.pessoaAgendamento &&
+        !!watchValues.dataAgendamento &&
+        !!watchValues.profissionalAgendamento &&
+        !!watchValues.organizacaoAgendamento,
+      select: ({ datas }) => datas,
+    },
+  });
 
   const {
     data: statusAgendamento = [],
@@ -73,7 +101,7 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
   });
 
   const { mutate, isLoading } = useMutation({
-    endpoint: "/agendamento",
+    endpoint: "/agendamento/bot/marcar",
     method: isNew ? "POST" : "PUT",
     successText: "Agendamento salvo com sucesso",
     mutationOptions: { onSuccess: () => onClose(true) },
@@ -113,35 +141,10 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
         title={title}
         isLoading={isLoading}
       >
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={6}>
-            {isFetchingTiposAgendamento ? (
-              <Skeleton
-                height="3.5rem"
-                style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
-              />
-            ) : (
-              <Select
-                name="tipoAgendamento"
-                label="Tipo"
-                margin="none"
-                disabled={!tiposAgendamento.length || isLoading}
-              >
-                {tiposAgendamento.map(({ id, tipoAgendamento }) => (
-                  <MenuItem key={id} value={id}>
-                    {tipoAgendamento}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          </Grid>
-
+        <Grid container rowSpacing={2} columnSpacing={1} p="1rem 0">
           <Grid item xs={12} sm={6}>
             {isFetchingClientes ? (
-              <Skeleton
-                height="3.5rem"
-                style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
-              />
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
             ) : (
               <Select
                 name="pessoaAgendamento"
@@ -159,33 +162,8 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField
-              name="dataAgendamento"
-              label="Data"
-              type="date"
-              disabled={isLoading}
-              InputLabelProps={{ shrink: true }}
-              style={{ margin: "1rem 0 .5rem" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              name="horarioAgendamento"
-              label="Horário"
-              type="time"
-              disabled={isLoading}
-              InputLabelProps={{ shrink: true }}
-              style={{ margin: "1rem 0 .5rem" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
             {isFetchingOrganizacoes ? (
-              <Skeleton
-                height="3.5rem"
-                style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
-              />
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
             ) : (
               <Select
                 name="organizacaoAgendamento"
@@ -203,11 +181,42 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
           </Grid>
 
           <Grid item xs={12} sm={6}>
+            {isFetchingTiposAgendamento ? (
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
+            ) : (
+              <Select
+                name="tipoAgendamento"
+                label="Tipo"
+                margin="none"
+                disabled={
+                  !watchValues.organizacaoAgendamento ||
+                  !tiposAgendamento.length ||
+                  isLoading
+                }
+              >
+                {tiposAgendamento.map(({ id, tipoAgendamento }) => (
+                  <MenuItem key={id} value={id}>
+                    {tipoAgendamento}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              name="dataAgendamento"
+              label="Data"
+              type="date"
+              disabled={isLoading}
+              InputLabelProps={{ shrink: true }}
+              style={{ margin: 0 }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
             {isFetchingProfissionais ? (
-              <Skeleton
-                height="3.5rem"
-                style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
-              />
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
             ) : (
               <Select
                 name="profissionalAgendamento"
@@ -215,9 +224,28 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
                 margin="none"
                 disabled={!profissionais.length || isLoading}
               >
-                {profissionais.map(({ id, login }) => (
+                {profissionais.map(({ id, nomeProfissional }) => (
                   <MenuItem key={id} value={id}>
-                    {login}
+                    {nomeProfissional}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            {isFetchingHorarios ? (
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
+            ) : (
+              <Select
+                name="horarioAgendamento"
+                label="Horário"
+                margin="none"
+                disabled={!horarios.length || isLoading}
+              >
+                {horarios.map(({ horarioAgendamento }) => (
+                  <MenuItem key={horarioAgendamento} value={horarioAgendamento}>
+                    {horarioAgendamento}
                   </MenuItem>
                 ))}
               </Select>
@@ -226,10 +254,7 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
 
           <Grid item xs={12}>
             {isFetchingStatusAgendamento ? (
-              <Skeleton
-                height="3.5rem"
-                style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
-              />
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
             ) : (
               <Select
                 name="statusAgendamento"
