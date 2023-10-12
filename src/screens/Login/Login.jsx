@@ -71,6 +71,7 @@ function Login() {
       onError: () => {
         localStorage.removeItem("user");
         setAuthentication(false);
+        window.location.reload();
       },
     },
   });
