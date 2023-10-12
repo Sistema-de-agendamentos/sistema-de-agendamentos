@@ -18,7 +18,8 @@ async function request({
   try {
     const response = await fetch(url, { method, body, headers, mode: "cors" });
 
-    if (response.status === 401) Promise.reject(new Error("Sessão expirada"));
+    if (response.status === 401)
+      return Promise.reject(new Error("Sessão expirada"));
 
     const json = await response.json();
     if (response.ok) return json;
