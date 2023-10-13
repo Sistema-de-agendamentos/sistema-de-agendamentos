@@ -15,11 +15,23 @@ async function request({
     }),
   };
 
-  const response = await fetch(url, { method, body, headers, mode: "cors" });
-  const json = await response.json();
+  try {
+    const response = await fetch(url, { method, body, headers, mode: "cors" });
 
-  if (response.ok) return json;
-  return Promise.reject(json.messages.join(", "));
+    if (response.status === 401)
+      return Promise.reject(new Error("Sessão expirada"));
+
+    const json = await response.json();
+    if (response.ok) return json;
+
+    return Promise.reject(json.messages.join(", "));
+  } catch (error) {
+    return Promise.reject(
+      new Error(
+        "Ocorreu um erro interno. Por favor, entre em contato com o suporte."
+      )
+    );
+  }
 }
 
 export default request;

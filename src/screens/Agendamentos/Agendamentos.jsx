@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -53,11 +53,19 @@ function Agendamentos() {
   const { watch } = methods;
   const watchValues = watch();
 
+  const queryString = useMemo(() => {
+    return generateQueryString({
+      ...watchValues,
+      nomePessoa: watchValues.nomePessoa.replace(/[^A-z|^ ]/g, "").trim(),
+      celularPessoa: watchValues.celularPessoa.replace(/\D/g, ""),
+    });
+  }, [watchValues]);
+
   const {
     data = [],
     refetch,
     isFetching,
-  } = useQuery({ endpoint: `${endpoint}${generateQueryString(watchValues)}` });
+  } = useQuery({ endpoint: `${endpoint}${queryString}` });
 
   const onCloseConfirmationModal = useCallback(
     (getData) => {
@@ -196,7 +204,7 @@ function Agendamentos() {
               phone(original.pessoaAgendamento?.celular),
           },
           {
-            accessorKey: "profissionalAgendamento.login",
+            accessorKey: "profissionalAgendamento.nomeProfissional",
             header: "Profissional",
             size: 5,
           },

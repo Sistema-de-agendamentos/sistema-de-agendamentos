@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
+
+import { useAuthStore } from "stores";
 
 import request from "./utils/request";
 
@@ -18,6 +21,9 @@ function useCustomQuery({
 }) {
   const queryKey = key ? [key] : [endpoint, body];
 
+  const { setAuthentication, setUser } = useAuthStore();
+  const navigate = useNavigate();
+
   return useQuery(
     queryKey,
     () => request({ endpoint, method, body, useAuthorizationHeader }),
@@ -27,6 +33,7 @@ function useCustomQuery({
       staleTime: ONE_HOUR,
       retry: false,
       refetchOnWindowFocus: false,
+      keepPreviousData: true,
       ...queryOptions,
       onSuccess: (data) => {
         if (successText) toast.success(successText);
@@ -35,6 +42,13 @@ function useCustomQuery({
       onError: (error) => {
         const errorMessage = error.message || error;
         toast.error(errorMessage);
+
+        if (errorMessage === "Sessão expirada") {
+          localStorage.removeItem("user");
+          navigate("/");
+          setAuthentication(false);
+          setUser({});
+        }
 
         if (queryOptions?.onError) queryOptions.onError(errorMessage);
       },

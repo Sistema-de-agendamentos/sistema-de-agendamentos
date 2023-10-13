@@ -231,7 +231,7 @@ function Atendimentos() {
         size="medium"
         style={{ float: "right", margin: "1.25rem 0 .5rem" }}
       >
-        Agendar
+        Criar
       </Button>
 
       {rowData && (
