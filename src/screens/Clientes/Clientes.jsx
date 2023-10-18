@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 
 import { useMutation, useQuery } from "hooks";
 import { generateQueryString } from "utils";
-import { phone } from "utils/addMask";
+import { cpf, phone } from "utils/addMask";
 
 import Button from "../../components/Button";
 import ConfirmationModal from "../../components/ConfirmationModal";
@@ -25,10 +25,9 @@ const endpoint = "/pessoa";
 
 const defaultValues = {
   nome: "",
-  estado: "",
-  cidade: "",
+  cpf: "",
   celular: "",
-  responsavel: "",
+  telefone: "",
 };
 
 function Clientes() {
@@ -42,11 +41,21 @@ function Clientes() {
   const { watch } = methods;
   const watchValues = watch();
 
+  const queryString = useMemo(() => {
+    return generateQueryString({
+      ...watchValues,
+      nome: watchValues.nome.replace(/[^A-z|^ ]/g, "").trim(),
+      cpf: watchValues.cpf.replace(/\D/g, ""),
+      celular: watchValues.celular.replace(/\D/g, ""),
+      telefone: watchValues.telefone.replace(/\D/g, ""),
+    });
+  }, [watchValues]);
+
   const {
     data = [],
     refetch,
     isFetching,
-  } = useQuery({ endpoint: `${endpoint}${generateQueryString(watchValues)}` });
+  } = useQuery({ endpoint: `${endpoint}${queryString}` });
 
   const onCloseConfirmationModal = useCallback(
     (getData) => {
@@ -77,30 +86,10 @@ function Clientes() {
         submit={refetch}
         defaultValues={defaultValues}
       >
-        <Grid item xs={12} sm={5}>
+        <Grid item xs={12} sm={6}>
           <TextField
             name="nome"
             label="Nome"
-            disabled={isFetching}
-            margin="none"
-            size="small"
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={3}>
-          <TextField
-            name="estado"
-            label="Estado"
-            disabled={isFetching}
-            margin="none"
-            size="small"
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={4}>
-          <TextField
-            name="cidade"
-            label="Cidade"
             disabled={isFetching}
             margin="none"
             size="small"
@@ -119,8 +108,18 @@ function Clientes() {
 
         <Grid item xs={12} sm={6}>
           <TextField
-            name="responsavel"
-            label="Responsável"
+            name="cpf"
+            label="CPF"
+            disabled={isFetching}
+            margin="none"
+            size="small"
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            name="telefone"
+            label="Telefone"
             disabled={isFetching}
             margin="none"
             size="small"
@@ -131,16 +130,19 @@ function Clientes() {
       <Table
         state={{ isLoading: isFetching }}
         columns={[
-          { accessorKey: "nome", header: "Nome completo", size: 5 },
-          { accessorKey: "cidade", header: "Cidade / UF", size: 3 },
+          { accessorKey: "nome", header: "Nome completo", size: 6 },
           {
             accessorKey: "celular",
             header: "Celular",
             size: 4,
             Cell: ({ row: { original } }) => phone(original.celular),
           },
-          { accessorKey: "responsavel", header: "Responsável", size: 5 },
-          { accessorKey: "motivo", header: "Motivo", size: 7 },
+          {
+            accessorKey: "telefone",
+            header: "Telefone",
+            size: 4,
+            Cell: ({ row: { original } }) => phone(original.telefone),
+          },
           {
             accessorKey: "botoes",
             header: "",
@@ -178,7 +180,7 @@ function Clientes() {
         ]}
         data={data}
         renderDetailPanel={({ row: { original } }) => {
-          if (!original.queixaPrincipal && !original.medicamentos)
+          if (!original.email && !original.cpf)
             return (
               <Typography variant="body2">
                 Não há dados para serem exibidos
@@ -187,26 +189,26 @@ function Clientes() {
 
           return (
             <Box display="flex" flexDirection="column" gap="1rem">
-              {original.queixaPrincipal && (
+              {original.email && (
                 <Box>
                   <Typography variant="subtitle2" fontWeight="bold">
-                    Queixa principal
+                    E-mail
                   </Typography>
 
                   <Typography variant="body2">
-                    {original.queixaPrincipal}
+                    {original.email}
                   </Typography>
                 </Box>
               )}
 
-              {original.medicamentos && (
+              {original.cpf && (
                 <Box>
                   <Typography variant="subtitle2" fontWeight="bold">
-                    Medicamentos
+                    CPF
                   </Typography>
 
                   <Typography variant="body2">
-                    {original.medicamentos}
+                    {cpf(original.cpf)}
                   </Typography>
                 </Box>
               )}
