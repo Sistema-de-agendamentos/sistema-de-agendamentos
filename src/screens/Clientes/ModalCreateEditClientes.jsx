@@ -68,13 +68,13 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
         title={title}
         isLoading={isLoading}
       >
-        <Grid container spacing={1}>
+        <Grid container rowSpacing={2} columnSpacing={1} p="1rem 0">
           <Grid item xs={12} sm={6}>
             <TextField
               name="nome"
               label="Nome"
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -85,7 +85,7 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
               type="date"
               disabled={isLoading}
               InputLabelProps={{ shrink: true }}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -93,14 +93,14 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
             {isFetchingGeneros ? (
               <Skeleton
                 height="3.5rem"
-                style={{ transform: "scale(1)", margin: "1rem 0 .5rem" }}
+                style={{ transform: "scale(1)" }}
               />
             ) : (
               <Select
                 name="genero"
                 label="Gênero"
-                margin="normal"
                 disabled={!generos.length || isLoading}
+                margin="none"
               >
                 {generos.map(({ id, genero }) => (
                   <MenuItem key={id} value={id}>
@@ -115,8 +115,9 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
             <TextField
               name="cpf"
               label="CPF"
+              mask="cpf"
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -125,7 +126,7 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
               name="email"
               label="E-mail"
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -133,8 +134,9 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
             <TextField
               name="celular"
               label="Celular"
+              mask="cell"
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -142,8 +144,9 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
             <TextField
               name="telefone"
               label="Telefone"
+              mask="phone"
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
         </Grid>
