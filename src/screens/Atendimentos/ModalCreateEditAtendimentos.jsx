@@ -58,7 +58,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
         title={title}
         isLoading={isLoading}
       >
-        <Grid container spacing={1}>
+        <Grid container rowSpacing={2} columnSpacing={1} p="1rem 0">
           <Grid item xs={12}>
             <TextField
               name="dataAtendimento"
@@ -66,7 +66,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
               type="date"
               disabled={isLoading}
               InputLabelProps={{ shrink: true }}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -76,7 +76,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
               label="Avaliação"
               multiline
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -86,7 +86,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
               label="Atividade"
               multiline
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
 
@@ -96,7 +96,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
               label="Evolução dos sintomas"
               multiline
               disabled={isLoading}
-              style={{ margin: "1rem 0 .5rem" }}
+              style={{ margin: 0 }}
             />
           </Grid>
         </Grid>
