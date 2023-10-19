@@ -101,7 +101,7 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
   });
 
   const { mutate, isLoading } = useMutation({
-    endpoint: "/agendamento/bot/marcar",
+    endpoint: isNew ? "/agendamento/bot/marcar" : "/agendamento",
     method: isNew ? "POST" : "PUT",
     successText: "Agendamento salvo com sucesso",
     mutationOptions: { onSuccess: () => onClose(true) },
@@ -127,10 +127,9 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
     [mutate, rowData?.id]
   );
 
-  const title = useMemo(
-    () => `${isNew ? "Novo" : "Editar"} agendamento`,
-    [isNew]
-  );
+  const title = useMemo(() => {
+    return `${isNew ? "Novo" : "Editar"} agendamento`;
+  }, [isNew]);
 
   return (
     <FormProvider {...methods}>
