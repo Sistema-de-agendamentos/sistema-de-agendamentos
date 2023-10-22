@@ -38,6 +38,8 @@ function Table({ state, ...rest }) {
               column.id === "mrt-row-expand" ? 1 : column.columnDef.size || 1,
             borderBottom: "none",
             background: "none",
+            display: "flex",
+            alignItems: "center",
           },
         };
       }}
