@@ -54,13 +54,14 @@ function Atendimentos() {
     isFetching,
   } = useQuery({ endpoint: `${endpoint}${generateQueryString(watchValues)}` });
 
-  const orderedData = useMemo(
-    () => {
-      return data.sort(({dataAtendimento: dataAtendimento1}, {dataAtendimento: dataAtendimento2}) => 
-        dataAtendimento1 > dataAtendimento2 ? -1 : 1)
-    },
-    [data]
-  );
+  const orderedData = useMemo(() => {
+    return data.sort(
+      (
+        { dataAtendimento: dataAtendimento1 },
+        { dataAtendimento: dataAtendimento2 }
+      ) => (dataAtendimento1 > dataAtendimento2 ? -1 : 1)
+    );
+  }, [data]);
 
   const onCloseConfirmationModal = useCallback(
     (getData) => {
@@ -159,8 +160,13 @@ function Atendimentos() {
             size: 2,
             Cell: ({ row: { original } }) => date(original.dataAtendimento),
           },
-          { accessorKey: "horario", header: "Horário", size: 2,
-            Cell: ({ row: { original } }) => original.dataAtendimento.split('T')[1].slice(0, 5)},
+          {
+            accessorKey: "horario",
+            header: "Horário",
+            size: 2,
+            Cell: ({ row: { original } }) =>
+              original.dataAtendimento.split("T")[1].slice(0, 5),
+          },
           { accessorKey: "pessoa.nome", header: "Nome completo", size: 5 },
           { accessorKey: "atividade", header: "Atividade", size: 3 },
           { accessorKey: "usuario.login", header: "Profissional", size: 5 },

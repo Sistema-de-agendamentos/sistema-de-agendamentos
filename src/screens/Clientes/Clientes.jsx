@@ -196,9 +196,7 @@ function Clientes() {
                     E-mail
                   </Typography>
 
-                  <Typography variant="body2">
-                    {original.email}
-                  </Typography>
+                  <Typography variant="body2">{original.email}</Typography>
                 </Box>
               )}
 
@@ -208,9 +206,7 @@ function Clientes() {
                     CPF
                   </Typography>
 
-                  <Typography variant="body2">
-                    {cpf(original.cpf)}
-                  </Typography>
+                  <Typography variant="body2">{cpf(original.cpf)}</Typography>
                 </Box>
               )}
             </Box>

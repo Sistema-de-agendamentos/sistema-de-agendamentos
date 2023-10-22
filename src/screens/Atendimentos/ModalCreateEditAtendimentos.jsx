@@ -23,19 +23,24 @@ const initialValues = {
 };
 
 const schema = yup.object().shape({
-  pessoa: yup.number().required("Cliente é obrigatório").typeError('Cliente é obrigatório'),
-  data: yup.date().required("Data é obrigatória").typeError('Data inválida'),
+  pessoa: yup
+    .number()
+    .required("Cliente é obrigatório")
+    .typeError("Cliente é obrigatório"),
+  data: yup.date().required("Data é obrigatória").typeError("Data inválida"),
   horario: yup.string().required("Horário é obrigatório"),
   atividade: yup.string().required("Atividade é obrigatório"),
   avaliacao: yup.string().required("Avaliação é obrigatório"),
-  evolucaoSintomas: yup.string().required("Evolução dos sintomas é obrigatório"),
+  evolucaoSintomas: yup
+    .string()
+    .required("Evolução dos sintomas é obrigatório"),
 });
 
 function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
   const isNew = useMemo(() => !Object.keys(rowData).length, [rowData]);
 
   const defaultValues = useMemo(() => {
-    const [data, horario] = (rowData?.dataAtendimento || "").split('T')
+    const [data, horario] = (rowData?.dataAtendimento || "").split("T");
     return {
       ...initialValues,
       pessoa: rowData?.pessoa?.id || "",
@@ -66,8 +71,13 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
     ({ data, horario, pessoa, ...rest }) => {
       const dataFinal = data.toISOString().slice(0, 10);
       const horarioFinal = horario.length === 5 ? `${horario}:00` : horario;
-      mutate({ ...{ id: rowData?.id }, dataAtendimento: `${dataFinal}T${horarioFinal}`
-        , pessoa: { id: pessoa }, ...rest });
+
+      mutate({
+        ...{ id: rowData?.id },
+        dataAtendimento: `${dataFinal}T${horarioFinal}`,
+        pessoa: { id: pessoa },
+        ...rest,
+      });
     },
     [mutate, rowData?.id]
   );

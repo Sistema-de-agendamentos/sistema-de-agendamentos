@@ -67,14 +67,24 @@ function Agendamentos() {
     isFetching,
   } = useQuery({ endpoint: `${endpoint}${queryString}` });
 
-  const orderedData = useMemo(
-    () => {
-      return data.sort(({dataAgendamento: dataAgendamento1, horarioAgendamento: horarioAgendamento1}, 
-        {dataAgendamento: dataAgendamento2, horarioAgendamento: horarioAgendamento2}) => 
-        `${dataAgendamento1}${horarioAgendamento1}` > `${dataAgendamento2}${horarioAgendamento2}` ? -1 : 1)
-    },
-    [data]
-  );
+  const orderedData = useMemo(() => {
+    return data.sort(
+      (
+        {
+          dataAgendamento: dataAgendamento1,
+          horarioAgendamento: horarioAgendamento1,
+        },
+        {
+          dataAgendamento: dataAgendamento2,
+          horarioAgendamento: horarioAgendamento2,
+        }
+      ) =>
+        `${dataAgendamento1}${horarioAgendamento1}` >
+        `${dataAgendamento2}${horarioAgendamento2}`
+          ? -1
+          : 1
+    );
+  }, [data]);
 
   const onCloseConfirmationModal = useCallback(
     (getData) => {
@@ -195,8 +205,13 @@ function Agendamentos() {
             size: 2,
             Cell: ({ row: { original } }) => date(original.dataAgendamento),
           },
-          { accessorKey: "horarioAgendamento", header: "Horário", size: 2,
-            Cell: ({ row: { original } }) => original.horarioAgendamento.slice(0, 5) },
+          {
+            accessorKey: "horarioAgendamento",
+            header: "Horário",
+            size: 2,
+            Cell: ({ row: { original } }) =>
+              original.horarioAgendamento.slice(0, 5),
+          },
           {
             accessorKey: "pessoaAgendamento.nome",
             header: "Nome completo",
@@ -225,7 +240,9 @@ function Agendamentos() {
             enableColumnActions: false,
             size: 1,
             Cell: ({ row: { original } }) => {
-              const actualDate = new Date().toLocaleString('pt-BR').replace(/(\d{2})\/(\d{2})\/(\d{4})(.+)/, '$3-$2-$1');
+              const actualDate = new Date()
+                .toLocaleString("pt-BR")
+                .replace(/(\d{2})\/(\d{2})\/(\d{4})(.+)/, "$3-$2-$1");
               const isFuture = original.dataAgendamento >= actualDate;
 
               return (
@@ -242,8 +259,9 @@ function Agendamentos() {
                       <Icon name="Delete" />
                     </IconButton>
                   </Tooltip>
-  
-                  {isFuture && (<Tooltip arrow placement="right" title="Editar">
+
+                  {isFuture && (
+                    <Tooltip arrow placement="right" title="Editar">
                       <IconButton
                         onClick={() => {
                           setOpenModalCreateEditAgendamentos(true);
@@ -253,9 +271,11 @@ function Agendamentos() {
                       >
                         <Icon name="Edit" />
                       </IconButton>
-                    </Tooltip>)}
+                    </Tooltip>
+                  )}
                 </Box>
-              )},
+              );
+            },
           },
         ]}
         data={orderedData}

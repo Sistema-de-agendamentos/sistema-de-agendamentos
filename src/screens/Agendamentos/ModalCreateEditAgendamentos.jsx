@@ -24,13 +24,31 @@ const initialValues = {
 };
 
 const schema = yup.object().shape({
-  tipoAgendamento: yup.number().required("Tipo é obrigatório").typeError('Tipo é obrigatório'),
-  pessoaAgendamento: yup.number().required("Cliente é obrigatório").typeError('Cliente é obrigatório'),
-  dataAgendamento: yup.date().required("Data é obrigatória").typeError('Data inválida'),
+  tipoAgendamento: yup
+    .number()
+    .required("Tipo é obrigatório")
+    .typeError("Tipo é obrigatório"),
+  pessoaAgendamento: yup
+    .number()
+    .required("Cliente é obrigatório")
+    .typeError("Cliente é obrigatório"),
+  dataAgendamento: yup
+    .date()
+    .required("Data é obrigatória")
+    .typeError("Data inválida"),
   horarioAgendamento: yup.string().required("Horário é obrigatório"),
-  organizacaoAgendamento: yup.number().required("Organização é obrigatória").typeError('Organização é obrigatória'),
-  profissionalAgendamento: yup.number().required("Profissional é obrigatório").typeError('Profissional é obrigatório'),
-  statusAgendamento: yup.number().required("Status é obrigatório").typeError('Status é obrigatório'),
+  organizacaoAgendamento: yup
+    .number()
+    .required("Organização é obrigatória")
+    .typeError("Organização é obrigatória"),
+  profissionalAgendamento: yup
+    .number()
+    .required("Profissional é obrigatório")
+    .typeError("Profissional é obrigatório"),
+  statusAgendamento: yup
+    .number()
+    .required("Status é obrigatório")
+    .typeError("Status é obrigatório"),
 });
 
 function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
@@ -255,10 +273,18 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
                 margin="none"
                 disabled={!horarios.length || isLoading}
               >
-                {(isNew ? horarios : [...horarios, {horarioAgendamento: rowData?.horarioAgendamento}]
-                  .sort(({horarioAgendamento: horarioAgendamento1}, {horarioAgendamento: horarioAgendamento2}) => 
-                    horarioAgendamento1 < horarioAgendamento2 ? -1 : 1))
-                  .map(({ horarioAgendamento }) => (
+                {(isNew
+                  ? horarios
+                  : [
+                      ...horarios,
+                      { horarioAgendamento: rowData?.horarioAgendamento },
+                    ].sort(
+                      (
+                        { horarioAgendamento: horarioAgendamento1 },
+                        { horarioAgendamento: horarioAgendamento2 }
+                      ) => (horarioAgendamento1 < horarioAgendamento2 ? -1 : 1)
+                    )
+                ).map(({ horarioAgendamento }) => (
                   <MenuItem key={horarioAgendamento} value={horarioAgendamento}>
                     {horarioAgendamento}
                   </MenuItem>
@@ -278,12 +304,14 @@ function ModalCreateEditAgendamentos({ open, onClose, rowData }) {
                 disabled={!statusAgendamento.length || isLoading}
               >
                 {statusAgendamento
-                .sort(({status: status1}, {status: status2}) => status1 < status2 ? -1 : 1)
-                .map(({ id, status }) => (
-                  <MenuItem key={id} value={id}>
-                    {status}
-                  </MenuItem>
-                ))}
+                  .sort(({ status: status1 }, { status: status2 }) =>
+                    status1 < status2 ? -1 : 1
+                  )
+                  .map(({ id, status }) => (
+                    <MenuItem key={id} value={id}>
+                      {status}
+                    </MenuItem>
+                  ))}
               </Select>
             )}
           </Grid>

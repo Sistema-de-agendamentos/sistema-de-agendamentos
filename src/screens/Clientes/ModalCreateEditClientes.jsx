@@ -25,7 +25,10 @@ const initialValues = {
 
 const schema = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório"),
-  dataNascimento: yup.date().required("Data de nascimento é obrigatória").typeError('Data de nascimento inválida'),
+  dataNascimento: yup
+    .date()
+    .required("Data de nascimento é obrigatória")
+    .typeError("Data de nascimento inválida"),
   genero: yup.number().required("Gênero é obrigatório"),
   cpf: yup.string().required("CPF é obrigatório"),
   celular: yup.string().required("Celular é obrigatório"),
@@ -102,10 +105,7 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
 
           <Grid item xs={12} sm={6}>
             {isFetchingGeneros ? (
-              <Skeleton
-                height="3.5rem"
-                style={{ transform: "scale(1)" }}
-              />
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
             ) : (
               <Select
                 name="genero"
