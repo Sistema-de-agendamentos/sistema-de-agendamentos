@@ -1,5 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Skeleton from "@mui/material/Skeleton";
@@ -20,6 +23,14 @@ const initialValues = {
   telefone: "",
 };
 
+const schema = yup.object().shape({
+  nome: yup.string().required("Nome é obrigatório"),
+  dataNascimento: yup.date().required("Data de nascimento é obrigatória").typeError('Data de nascimento inválida'),
+  genero: yup.number().required("Gênero é obrigatório"),
+  cpf: yup.string().required("CPF é obrigatório"),
+  celular: yup.string().required("Celular é obrigatório"),
+});
+
 function ModalCreateEditClientes({ open, onClose, rowData }) {
   const isNew = useMemo(() => !Object.keys(rowData).length, [rowData]);
 
@@ -36,7 +47,7 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
     };
   }, [rowData]);
 
-  const methods = useForm({ defaultValues });
+  const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { handleSubmit } = methods;
 
   const { data: generos = [], isFetching: isFetchingGeneros } = useQuery({
