@@ -91,7 +91,7 @@ function Login() {
             name="password"
             label="Senha"
             disabled={isLoadingLogin}
-            type="password"
+            sx={{'& input': {"-webkit-text-security": 'disc'}}}
           />
 
           <Button
