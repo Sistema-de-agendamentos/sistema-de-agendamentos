@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -54,6 +54,14 @@ function Atendimentos() {
     isFetching,
   } = useQuery({ endpoint: `${endpoint}${generateQueryString(watchValues)}` });
 
+  const orderedData = useMemo(
+    () => {
+      return data.sort(({dataAtendimento: dataAtendimento1}, {dataAtendimento: dataAtendimento2}) => 
+        dataAtendimento1 > dataAtendimento2 ? -1 : 1)
+    },
+    [data]
+  );
+
   const onCloseConfirmationModal = useCallback(
     (getData) => {
       if (getData) refetch();
@@ -82,6 +90,7 @@ function Atendimentos() {
         methods={methods}
         submit={refetch}
         defaultValues={defaultValues}
+        isFetching={isFetching}
       >
         <Grid item xs={12} sm={6}>
           <TextField
@@ -150,6 +159,8 @@ function Atendimentos() {
             size: 2,
             Cell: ({ row: { original } }) => date(original.dataAtendimento),
           },
+          { accessorKey: "horario", header: "Horário", size: 2,
+            Cell: ({ row: { original } }) => original.dataAtendimento.split('T')[1].slice(0, 5)},
           { accessorKey: "pessoa.nome", header: "Nome completo", size: 5 },
           { accessorKey: "atividade", header: "Atividade", size: 3 },
           { accessorKey: "usuario.login", header: "Profissional", size: 5 },
@@ -188,7 +199,7 @@ function Atendimentos() {
             ),
           },
         ]}
-        data={data}
+        data={orderedData}
         renderDetailPanel={({ row: { original } }) => {
           if (!original.avaliacao && !original.evolucaoSintomas)
             return (
