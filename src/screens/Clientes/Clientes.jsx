@@ -85,6 +85,7 @@ function Clientes() {
         methods={methods}
         submit={refetch}
         defaultValues={defaultValues}
+        isFetching={isFetching}
       >
         <Grid item xs={12} sm={6}>
           <TextField
