@@ -67,6 +67,25 @@ function Agendamentos() {
     isFetching,
   } = useQuery({ endpoint: `${endpoint}${queryString}` });
 
+  const orderedData = useMemo(() => {
+    return data.sort(
+      (
+        {
+          dataAgendamento: dataAgendamento1,
+          horarioAgendamento: horarioAgendamento1,
+        },
+        {
+          dataAgendamento: dataAgendamento2,
+          horarioAgendamento: horarioAgendamento2,
+        }
+      ) =>
+        `${dataAgendamento1}${horarioAgendamento1}` >
+        `${dataAgendamento2}${horarioAgendamento2}`
+          ? -1
+          : 1
+    );
+  }, [data]);
+
   const onCloseConfirmationModal = useCallback(
     (getData) => {
       if (getData) refetch();
@@ -95,6 +114,7 @@ function Agendamentos() {
         methods={methods}
         submit={refetch}
         defaultValues={defaultValues}
+        isFetching={isFetching}
       >
         <Grid item xs={12} sm={6}>
           <TextField
@@ -185,7 +205,13 @@ function Agendamentos() {
             size: 2,
             Cell: ({ row: { original } }) => date(original.dataAgendamento),
           },
-          { accessorKey: "horarioAgendamento", header: "Horário", size: 2 },
+          {
+            accessorKey: "horarioAgendamento",
+            header: "Horário",
+            size: 2,
+            Cell: ({ row: { original } }) =>
+              original.horarioAgendamento.slice(0, 5),
+          },
           {
             accessorKey: "pessoaAgendamento.nome",
             header: "Nome completo",
@@ -213,37 +239,46 @@ function Agendamentos() {
             header: "",
             enableColumnActions: false,
             size: 1,
-            Cell: ({ row: { original } }) => (
-              <Box sx={{ display: "flex", margin: "-.375rem -1rem" }}>
-                <Tooltip arrow placement="left" title="Excluir">
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      setIdAgendamento([original.id]);
-                      setOpenConfirmationModal(true);
-                    }}
-                    style={{ padding: ".25rem" }}
-                  >
-                    <Icon name="Delete" />
-                  </IconButton>
-                </Tooltip>
+            Cell: ({ row: { original } }) => {
+              const actualDate = new Date()
+                .toLocaleString("pt-BR")
+                .replace(/(\d{2})\/(\d{2})\/(\d{4})(.+)/, "$3-$2-$1");
+              const isFuture = original.dataAgendamento >= actualDate;
 
-                <Tooltip arrow placement="right" title="Editar">
-                  <IconButton
-                    onClick={() => {
-                      setOpenModalCreateEditAgendamentos(true);
-                      setRowData(original);
-                    }}
-                    style={{ padding: ".25rem" }}
-                  >
-                    <Icon name="Edit" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            ),
+              return (
+                <Box sx={{ display: "flex", margin: "-.375rem -1rem" }}>
+                  <Tooltip arrow placement="left" title="Excluir">
+                    <IconButton
+                      color="error"
+                      onClick={() => {
+                        setIdAgendamento([original.id]);
+                        setOpenConfirmationModal(true);
+                      }}
+                      style={{ padding: ".25rem" }}
+                    >
+                      <Icon name="Delete" />
+                    </IconButton>
+                  </Tooltip>
+
+                  {isFuture && (
+                    <Tooltip arrow placement="right" title="Editar">
+                      <IconButton
+                        onClick={() => {
+                          setOpenModalCreateEditAgendamentos(true);
+                          setRowData(original);
+                        }}
+                        style={{ padding: ".25rem" }}
+                      >
+                        <Icon name="Edit" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+              );
+            },
           },
         ]}
-        data={data}
+        data={orderedData}
       />
 
       <Button

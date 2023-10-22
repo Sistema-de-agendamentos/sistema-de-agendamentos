@@ -4,6 +4,7 @@ import {
   Select as SelectMaterialUI,
   FormControl,
   InputLabel,
+  FormHelperText
 } from "@mui/material";
 
 function Select({
@@ -56,6 +57,8 @@ function Select({
           >
             {children}
           </SelectMaterialUI>
+
+          {errorMessage && <FormHelperText error>{errorMessage}</FormHelperText>}
         </FormControl>
       )}
     />

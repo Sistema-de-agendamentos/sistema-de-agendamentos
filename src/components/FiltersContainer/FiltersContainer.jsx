@@ -12,7 +12,7 @@ const StyledContainerButtons = styled(Box)({
   marginBottom: "2.5rem",
 });
 
-function FiltersContainer({ children, methods, submit, defaultValues }) {
+function FiltersContainer({ children, methods, submit, defaultValues, isFetching }) {
   const { clearErrors, handleSubmit, reset } = methods;
 
   return (
@@ -27,6 +27,7 @@ function FiltersContainer({ children, methods, submit, defaultValues }) {
             onClick={() => reset(defaultValues)}
             size="medium"
             color="secondary"
+            disabled={isFetching}
             style={{ margin: 0 }}
           >
             Limpar
@@ -36,7 +37,8 @@ function FiltersContainer({ children, methods, submit, defaultValues }) {
             type="submit"
             onClick={clearErrors}
             size="medium"
-            style={{ margin: 0 }}
+            isLoading={isFetching}
+            style={{ margin: 0, minWidth: '5.75rem' }}
           >
             Buscar
           </Button>

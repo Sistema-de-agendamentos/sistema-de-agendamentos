@@ -85,6 +85,7 @@ function Clientes() {
         methods={methods}
         submit={refetch}
         defaultValues={defaultValues}
+        isFetching={isFetching}
       >
         <Grid item xs={12} sm={6}>
           <TextField
@@ -195,9 +196,7 @@ function Clientes() {
                     E-mail
                   </Typography>
 
-                  <Typography variant="body2">
-                    {original.email}
-                  </Typography>
+                  <Typography variant="body2">{original.email}</Typography>
                 </Box>
               )}
 
@@ -207,9 +206,7 @@ function Clientes() {
                     CPF
                   </Typography>
 
-                  <Typography variant="body2">
-                    {cpf(original.cpf)}
-                  </Typography>
+                  <Typography variant="body2">{cpf(original.cpf)}</Typography>
                 </Box>
               )}
             </Box>
