@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Skeleton from "@mui/material/Skeleton";
 
 import { useMutation, useQuery } from "hooks";
+import { date } from "utils/addMask";
 
 import Dialog from "../../components/Dialog";
 import Select from "../../components/Select";
@@ -27,6 +28,10 @@ const schema = yup.object().shape({
     .number()
     .required("Cliente é obrigatório")
     .typeError("Cliente é obrigatório"),
+  agendamento: yup
+    .number()
+    .required("Agendamento é obrigatório")
+    .typeError("Agendamento é obrigatório"),
   data: yup.date().required("Data é obrigatória").typeError("Data inválida"),
   horario: yup.string().required("Horário é obrigatório"),
   atividade: yup.string().required("Atividade é obrigatório"),
@@ -44,6 +49,7 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
     return {
       ...initialValues,
       pessoa: rowData?.pessoa?.id || "",
+      agendamento: rowData?.agendamento?.id || "",
       data: data || "",
       horario: (horario || "").slice(0, 5),
       avaliacao: rowData?.avaliacao || "",
@@ -53,22 +59,31 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
   }, [rowData]);
 
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
+  const watchValues = watch();
 
   const { data: clientes = [], isFetching: isFetchingClientes } = useQuery({
     endpoint: "/pessoa",
     queryOptions: { enabled: true },
   });
 
+  const { data: agendamentos = [], isFetching: isFetchingAgendamentos } =
+    useQuery({
+      endpoint: `/agendamento?idStatus=1&id=${
+        clientes.find(({ id }) => id === watchValues.pessoa)?.nome
+      }`,
+      queryOptions: { enabled: !!watchValues.pessoa },
+    });
+
   const { mutate, isLoading } = useMutation({
-    endpoint: "/atendimento",
+    endpoint: `/atendimento?agendamentoId=${watchValues.agendamento}`,
     method: isNew ? "POST" : "PUT",
     successText: "Atendimento salvo com sucesso",
     mutationOptions: { onSuccess: () => onClose(true) },
   });
 
   const submit = useCallback(
-    ({ data, horario, pessoa, ...rest }) => {
+    ({ data, horario, pessoa, agendamento, ...rest }) => {
       const dataFinal = data.toISOString().slice(0, 10);
       const horarioFinal = horario.length === 5 ? `${horario}:00` : horario;
 
@@ -107,11 +122,65 @@ function ModalCreateEditAtendimentos({ open, onClose, rowData }) {
                 margin="none"
                 disabled={!clientes.length || isLoading}
               >
-                {clientes.map(({ id, nome }) => (
-                  <MenuItem key={id} value={id}>
-                    {nome}
-                  </MenuItem>
-                ))}
+                {clientes
+                  .sort(({ nome: nome1 }, { nome: nome2 }) =>
+                    nome1 > nome2 ? 1 : -1
+                  )
+                  .map(({ id, nome }) => (
+                    <MenuItem key={id} value={id}>
+                      {nome}
+                    </MenuItem>
+                  ))}
+              </Select>
+            )}
+          </Grid>
+
+          <Grid item xs={12}>
+            {isFetchingAgendamentos ? (
+              <Skeleton height="3.5rem" style={{ transform: "scale(1)" }} />
+            ) : (
+              <Select
+                name="agendamento"
+                label="Agendamento"
+                margin="none"
+                disabled={!agendamentos.length || isLoading}
+              >
+                {(isNew
+                  ? agendamentos
+                  : [
+                      ...agendamentos,
+                      {
+                        id: rowData?.agendamento?.id,
+                        dataAgendamento: rowData?.agendamento?.dataAgendamento,
+                        horarioAgendamento:
+                          rowData?.agendamento?.horarioAgendamento,
+                      },
+                    ]
+                )
+                  .sort(
+                    (
+                      {
+                        dataAgendamento: dataAgendamento1,
+                        horarioAgendamento: horarioAgendamento1,
+                      },
+                      {
+                        dataAgendamento: dataAgendamento2,
+                        horarioAgendamento: horarioAgendamento2,
+                      }
+                    ) =>
+                      `${dataAgendamento1}${horarioAgendamento1}` >
+                      `${dataAgendamento2}${horarioAgendamento2}`
+                        ? -1
+                        : 1
+                  )
+                  .map(({ id, dataAgendamento, horarioAgendamento }) => (
+                    <MenuItem key={id} value={id}>
+                      {`${date(dataAgendamento)} ${horarioAgendamento.slice(
+                        0,
+                        5
+                      )}`}
+                    </MenuItem>
+                  ))}
               </Select>
             )}
           </Grid>
