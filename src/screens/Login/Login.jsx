@@ -1,14 +1,17 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 import { useQuery } from "hooks";
 import { useAuthStore } from "stores";
 
 import useMutation from "../../hooks/useMutation";
 import Button from "../../components/Button";
+import Icon from "../../components/Icon";
 import TextField from "../../components/TextField";
 import PublicScreen from "../../components/PublicScreen";
 import LoadingPage from "../LoadingPage";
@@ -26,6 +29,8 @@ const schema = yup.object().shape({
 function Login() {
   const navigate = useNavigate();
   const { setAuthentication, setUser } = useAuthStore();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const methods = useForm({ defaultValues, resolver: yupResolver(schema) });
   const { clearErrors, handleSubmit } = methods;
@@ -91,7 +96,22 @@ function Login() {
             name="password"
             label="Senha"
             disabled={isLoadingLogin}
-            sx={{ "& input": { "-webkit-text-security": "disc" } }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword(!showPassword)}>
+                    <Icon
+                      name={showPassword ? "Visibility" : "VisibilityOff"}
+                    />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              "& input": {
+                "-webkit-text-security": showPassword ? "none" : "disc",
+              },
+            }}
           />
 
           <Button
