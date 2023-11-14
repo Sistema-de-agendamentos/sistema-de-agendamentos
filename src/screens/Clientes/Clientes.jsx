@@ -44,7 +44,7 @@ function Clientes() {
   const queryString = useMemo(() => {
     return generateQueryString({
       ...watchValues,
-      nome: watchValues.nome.replace(/[^A-z|^ ]/g, "").trim(),
+      nome: watchValues.nome.trim(),
       cpf: watchValues.cpf.replace(/\D/g, ""),
       celular: watchValues.celular.replace(/\D/g, ""),
       telefone: watchValues.telefone.replace(/\D/g, ""),
