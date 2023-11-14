@@ -125,13 +125,13 @@ function Login() {
             Entrar
           </Button>
 
-          <Button
+          {/* <Button
             onClick={() => navigate("/esqueceu-senha")}
             disabled={isLoadingLogin}
             variant="inherit"
           >
             Esqueceu a senha?
-          </Button>
+          </Button> */}
         </form>
       </FormProvider>
     </PublicScreen>
