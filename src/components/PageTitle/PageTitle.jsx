@@ -16,6 +16,9 @@ const StyledTypography = styled(Typography)((props) => ({
     background: "#0662DA",
     borderRadius: "1rem",
   },
+  [props.theme.breakpoints.down("sm")]: {
+    fontSize: props["data-is-modal"] ? "1.25rem" : "1.375rem",
+  },
 }));
 
 function PageTitle({ title = null, removeLine = false, isModal = false }) {
