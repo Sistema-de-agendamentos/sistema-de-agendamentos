@@ -2,6 +2,12 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Box, Drawer, styled } from "@mui/material";
 import { toast } from "react-toastify";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import { useAuthStore } from "stores";
 import { useQuery } from "hooks";
@@ -28,6 +34,7 @@ const DrawerStyled = styled(Drawer)(({ open }) => ({
 }));
 
 const MenuStyled = styled(Box)((props) => ({
+  maxWidth: "14rem",
   flex: 1,
   transition: ".3s",
   ...(!props["data-open"] && { transform: "translateY(-9.75rem)" }),
@@ -59,10 +66,14 @@ const LogoutButtonStyled = styled(Button)({
 });
 
 const ContentStyled = styled(Box)((props) => ({
-  width: "100%",
+  width: `calc(100% - ${(props["data-open"] ? 14 : 3) + 5.5}rem)`,
   margin: "2.5rem 3.5rem 2rem",
-  marginLeft: `${(props["data-open"] ? 14 : 3) + 3.5}rem`,
+  marginLeft: `${(props["data-open"] ? 14 : 3) + 3}rem`,
   transition: ".3s",
+  [props.theme.breakpoints.down("sm")]: {
+    margin: "5rem 2rem 2rem",
+    width: "100%",
+  },
 }));
 
 const generateImgStyle = (open) => ({
@@ -83,6 +94,9 @@ const stylesCloseMenu = {
 };
 
 function Layout({ children }) {
+  const { breakpoints } = useTheme();
+  const smBreakpoint = useMediaQuery(breakpoints.down("sm"));
+
   const {
     user: { login },
     setAuthentication,
@@ -94,7 +108,7 @@ function Layout({ children }) {
 
   const [openDrawer, setOpenDrawer] = useState(true);
 
-  const defaultProps = (active) => ({
+  const defaultProps = (active, mobile = false) => ({
     ...(!active && { color: "inherit" }),
     fullWidth: true,
     styles: {
@@ -104,7 +118,7 @@ function Layout({ children }) {
       gap: "1rem",
       margin: ".5rem 0",
       textDecoration: "none",
-      ...(openDrawer ? stylesOpenMenu : stylesCloseMenu),
+      ...(openDrawer || mobile ? stylesOpenMenu : stylesCloseMenu),
     },
   });
 
@@ -112,10 +126,6 @@ function Layout({ children }) {
     { path: "/agendamentos", icon: "CalendarMonth", text: "Agendamentos" },
     { path: "/atendimentos", icon: "Assignment", text: "Atendimentos" },
     { path: "/clientes", icon: "SwitchAccount", text: "Clientes" },
-    // { path: "/usuarios", icon: "Badge", text: "Usuários" },
-    // { path: "/organizacoes", icon: "Business", text: "Organizações" },
-    // { path: "/configuracoes", icon: "Settings", text: "Configurações" },
-    // { path: "/configuradores", icon: "WatchLater", text: "Configuradores" },
   ];
 
   const { refetch: mutateLogout, isFetching: isLoadingLogout } = useQuery({
@@ -135,53 +145,132 @@ function Layout({ children }) {
 
   return (
     <ContainerStyled>
-      <DrawerStyled variant="permanent" open={openDrawer}>
-        <img
-          src={Logo}
-          alt="Logo"
-          className="logo"
-          style={generateImgStyle(openDrawer)}
-        />
-
-        <MenuStyled data-open={openDrawer}>
-          {menus.map(({ icon, text, path }) => {
-            const active = path === pathname;
-
-            return (
-              <Button
-                key={path}
-                onClick={() => navigate(path)}
-                variant={active ? "contained" : "inherit"}
-                {...defaultProps(active)}
-              >
-                <Icon name={icon} />
-                <span>{text}</span>
-              </Button>
-            );
-          })}
-        </MenuStyled>
-
-        <OpenDrawerButtonStyled
-          onClick={() => setOpenDrawer(!openDrawer)}
-          fullWidth
-          variant="inherit"
-          data-open={openDrawer}
+      {smBreakpoint ? (
+        <AppBar
+          position="fixed"
+          style={{
+            background: "#FFF",
+            height: openDrawer ? "3.5rem" : "14rem",
+            overflow: "hidden",
+            transition: ".3s",
+          }}
         >
-          <Icon name="NavigateBefore" />
-        </OpenDrawerButtonStyled>
-      </DrawerStyled>
+          <Toolbar
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              transition: ".3s",
+            }}
+          >
+            <Button
+              onClick={mutateLogout}
+              isLoading={isLoadingLogout}
+              variant="inherit"
+              style={{
+                margin: 0,
+                gap: "0.75rem",
+              }}
+            >
+              <Icon name="Logout" />
+            </Button>
+
+            <img
+              src={Logo}
+              alt="Logo"
+              className="logo"
+              style={{ height: "3rem" }}
+            />
+
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              style={{
+                color: "#333",
+                transition: ".3s",
+                transform: openDrawer ? "none" : "rotate(90deg)",
+              }}
+              onClick={() => setOpenDrawer(!openDrawer)}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+
+          <MenuStyled
+            data-open
+            style={{ alignSelf: "flex-end", margin: ".5rem 0" }}
+          >
+            {menus.map(({ icon, text, path }) => {
+              const active = path === pathname;
+
+              return (
+                <Button
+                  key={path}
+                  onClick={() => {
+                    navigate(path);
+                    setOpenDrawer(true);
+                  }}
+                  variant={active ? "contained" : "inherit"}
+                  {...defaultProps(active, true)}
+                >
+                  <Icon name={icon} />
+                  <span>{text}</span>
+                </Button>
+              );
+            })}
+          </MenuStyled>
+        </AppBar>
+      ) : (
+        <DrawerStyled variant="permanent" open={openDrawer}>
+          <img
+            src={Logo}
+            alt="Logo"
+            className="logo"
+            style={generateImgStyle(openDrawer)}
+          />
+
+          <MenuStyled data-open={openDrawer}>
+            {menus.map(({ icon, text, path }) => {
+              const active = path === pathname;
+
+              return (
+                <Button
+                  key={path}
+                  onClick={() => navigate(path)}
+                  variant={active ? "contained" : "inherit"}
+                  {...defaultProps(active)}
+                >
+                  <Icon name={icon} />
+                  <span>{text}</span>
+                </Button>
+              );
+            })}
+          </MenuStyled>
+
+          <OpenDrawerButtonStyled
+            onClick={() => setOpenDrawer(!openDrawer)}
+            fullWidth
+            variant="inherit"
+            data-open={openDrawer}
+          >
+            <Icon name="NavigateBefore" />
+          </OpenDrawerButtonStyled>
+        </DrawerStyled>
+      )}
 
       <ContentStyled data-open={openDrawer}>{children}</ContentStyled>
 
-      <LogoutButtonStyled
-        onClick={mutateLogout}
-        isLoading={isLoadingLogout}
-        margin="none"
-        color="secondary"
-      >
-        <span>{login}</span>
-        <Icon name="Logout" />
-      </LogoutButtonStyled>
+      {!smBreakpoint && (
+        <LogoutButtonStyled
+          onClick={mutateLogout}
+          isLoading={isLoadingLogout}
+          margin="none"
+          color="secondary"
+        >
+          <span>{login}</span>
+          <Icon name="Logout" />
+        </LogoutButtonStyled>
+      )}
     </ContainerStyled>
   );
 }
