@@ -130,6 +130,7 @@ function Atendimentos() {
               disabled={!clientes.length || isFetching}
               margin="none"
               size="small"
+              style={{ marginBottom: "0.9375rem" }}
             >
               {clientes.map(({ id, nome }) => (
                 <MenuItem key={id} value={id}>
