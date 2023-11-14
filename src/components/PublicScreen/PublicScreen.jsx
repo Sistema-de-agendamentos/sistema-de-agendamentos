@@ -23,7 +23,14 @@ function PublicScreen({ children, title }) {
       )}
 
       <StyledContentRight>
-        {smBreakpoint && (<img src={Logo} alt="Logo" className="logo" style={{ width: '12.5rem', margin: '-4rem 0 4rem'}} />)}
+        {smBreakpoint && (
+          <img
+            src={Logo}
+            alt="Logo"
+            className="logo"
+            style={{ width: "10rem", margin: "-1rem 0 3rem" }}
+          />
+        )}
 
         <PageTitle title={title} removeLine />
         {children}
