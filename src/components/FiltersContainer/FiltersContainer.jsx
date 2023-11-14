@@ -2,6 +2,8 @@ import { FormProvider } from "react-hook-form";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Button from "../Button";
 
@@ -12,8 +14,17 @@ const StyledContainerButtons = styled(Box)({
   marginBottom: "2.5rem",
 });
 
-function FiltersContainer({ children, methods, submit, defaultValues, isFetching }) {
+function FiltersContainer({
+  children,
+  methods,
+  submit,
+  defaultValues,
+  isFetching,
+}) {
   const { clearErrors, handleSubmit, reset } = methods;
+
+  const { breakpoints } = useTheme();
+  const smBreakpoint = useMediaQuery(breakpoints.down("md"));
 
   return (
     <FormProvider {...methods}>
@@ -22,7 +33,7 @@ function FiltersContainer({ children, methods, submit, defaultValues, isFetching
           {children}
         </Grid>
 
-        <StyledContainerButtons>
+        <StyledContainerButtons {...(smBreakpoint && { mt: "1rem" })}>
           <Button
             onClick={() => reset(defaultValues)}
             size="medium"
@@ -38,7 +49,7 @@ function FiltersContainer({ children, methods, submit, defaultValues, isFetching
             onClick={clearErrors}
             size="medium"
             isLoading={isFetching}
-            style={{ margin: 0, minWidth: '5.75rem' }}
+            style={{ margin: 0, minWidth: "5.75rem" }}
           >
             Buscar
           </Button>
