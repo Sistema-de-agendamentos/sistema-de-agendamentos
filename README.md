@@ -2,7 +2,7 @@
 
 ## Instalação
 
-Faça um `git clone` do link: [https://github.com/Sistema-de-agendamentos/sistema-de-agendamentos.git](https://github.com/Sistema-de-agendamentos/sistema-de-agendamentos.git)/
+Faça um `git clone` do link: [https://github.com/Sistema-de-agendamentos/sistema-de-agendamentos.git](https://github.com/Sistema-de-agendamentos/sistema-de-agendamentos.git).\
 Após isso faça o comando: `cd sistema-de-agendamentos`, e em seguida o comando: `npm install`.
 
 ## Scripts disponíveis
