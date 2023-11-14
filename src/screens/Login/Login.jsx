@@ -107,6 +107,8 @@ function Login() {
                 </InputAdornment>
               ),
             }}
+            // eslint-disable-next-line react/jsx-no-duplicate-props
+            inputProps={{ autocomplete: "off" }}
             sx={{
               "& input": {
                 "-webkit-text-security": showPassword ? "none" : "disc",
