@@ -16,7 +16,7 @@ import TextField from "../../components/TextField";
 const initialValues = {
   nome: "",
   dataNascimento: "",
-  genero: "",
+  genero: null,
   cpf: "",
   email: "",
   celular: "",
@@ -42,7 +42,7 @@ function ModalCreateEditClientes({ open, onClose, rowData }) {
       ...initialValues,
       nome: rowData?.nome || "",
       dataNascimento: rowData?.dataNascimento || "",
-      genero: rowData?.genero?.id || "",
+      genero: rowData?.genero?.id || null,
       cpf: rowData?.cpf || "",
       email: rowData?.email || "",
       celular: rowData?.celular || "",

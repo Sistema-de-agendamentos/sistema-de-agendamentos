@@ -1,6 +1,8 @@
 function phone(value) {
   if (typeof value !== "string") return "";
   const cleanValue = value.replace(/\D/g, "");
+  if (cleanValue.length === 10)
+    return cleanValue.replace(/(\d{2})(\d{4})(\d{4})/g, "($1) $2-$3");
   return cleanValue.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/g, "($1) $2 $3-$4");
 }
 

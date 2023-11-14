@@ -30,7 +30,7 @@ const defaultValues = {
   dataFim: "",
   nomePessoa: "",
   dataAgendamento: "",
-  celularPessoa: "",
+  // celularPessoa: "",
   idStatus: 1,
 };
 
@@ -57,7 +57,7 @@ function Agendamentos() {
     return generateQueryString({
       ...watchValues,
       nomePessoa: watchValues.nomePessoa.replace(/[^A-z|^ ]/g, "").trim(),
-      celularPessoa: watchValues.celularPessoa.replace(/\D/g, ""),
+      // celularPessoa: watchValues.celularPessoa.replace(/\D/g, ""),
     });
   }, [watchValues]);
 
@@ -140,7 +140,7 @@ function Agendamentos() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <TextField
             name="nomePessoa"
             label="Nome do cliente"
@@ -162,7 +162,7 @@ function Agendamentos() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        {/* <Grid item xs={12} sm={6}>
           <TextField
             name="celularPessoa"
             label="Celular"
@@ -170,7 +170,7 @@ function Agendamentos() {
             margin="none"
             size="small"
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} sm={6}>
           {isFetchingStatusAgendamento ? (
