@@ -9,6 +9,7 @@ function Table({ state, ...rest }) {
       enableColumnActions={false}
       muiTablePaperProps={{
         sx: {
+          maxWidth: "calc(100vw - 4rem)",
           background: "none",
           boxShadow: "none",
         },
@@ -24,6 +25,7 @@ function Table({ state, ...rest }) {
       }}
       muiTableBodyRowProps={{
         sx: {
+          minWidth: "62.5rem",
           display: "flex",
           justifyContent: "space-between",
           margin: ".25rem 0",
